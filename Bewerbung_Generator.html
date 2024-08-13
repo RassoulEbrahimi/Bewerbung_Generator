@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bewerbung Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+    <header class="header">
+        <a href="#" class="logo">RSL.</a>
+
+        <nav class="navbar">
+            <a href="https://rassoulebrahimi.github.io/website/">Startseite</a>
+            <a href="https://rassoulebrahimi.github.io/website/#about">Profil</a>
+            <a href="https://rassoulebrahimi.github.io/website/#education">Bildungsweg</a>
+            <a href="https://rassoulebrahimi.github.io/website/#skills">Skills</a>
+            <a href="https://rassoulebrahimi.github.io/website/#contact">Kontakt</a>
+            <div class="dropdown">
+                <button class="dropbtn">Projekte<i class="fa fa-caret-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="https://rassoulebrahimi.github.io/website/projects/project1/project.html">Projekt #1</a>
+                    <a href="https://rassoulebrahimi.github.io/website/projects/project2/project.html">Projekt #2</a>
+                    <a href="https://rassoulebrahimi.github.io/website/projects/project3/project.html">Projekt #3</a>
+                    <a href="https://rassoulebrahimi.github.io/website/projects/Bewerbung_Generator/Bewerbung_Generator.html">Bewerbung Generator</a>
+                </div>
+            </div>
+            <span class="active-nav"></span>
+            <span class="animate" style="--i:2;"></span>
+        </nav>
+    </header>
+
+    <section class="project-showcase" id="home">
+        <!-- <h2>Project Showcase</h2> -->
+        <div class="project-content">
+            <div class="project-img">
+                <img src="bewerbung.png" alt="Bewerbung Generator">
+            </div>
+            <div class="project-description">
+                <h2>Bewerbung Generator</h2>
+                <p>Erstellen Sie Ihre maßgeschneiderte Bewerbung mit Hilfe von KI</p>
+ 
+                <div class="input-toggle">
+                    <button id="toggle-file" class="btn active">Datei hochladen</button>
+                    <button id="toggle-text" class="btn">Text eingeben</button>
+                </div>
+                           
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div id="file-inputs">
+                        <div class="file-input-container">
+                            <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
+                            <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt">
+                        </div>
+            
+                        <div class="file-input-container">
+                            <label for="jobbeschreibung">Jobbeschreibung (PDF, DOCX oder TXT):</label>
+                            <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt">
+                        </div>
+                    </div>
+
+                    <div id="text-inputs" style="display: none;">
+                        <div class="text-input-container">
+                            <label for="lebenslauf-text">Lebenslauf (Text):</label>
+                            <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein"></textarea>
+                        </div>
+            
+                        <div class="text-input-container">
+                            <label for="jobbeschreibung-text">Jobbeschreibung (Text):</label>
+                            <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="btn-box">
+                        <button type="submit" class="btn">Bewerbung generieren</button>
+                    </div>
+                </form>
+                <div id="result-section" style="display: none;">
+                    <h3>Ihre generierte Bewerbung</h3>
+                    <div id="generated-content"></div>
+                    <div id="cost-info"></div>
+                    <div class="result-buttons">
+                        <button class="result-btn" id="copy-text">In die Zwischenablage kopieren</button>
+                        <button class="result-btn" id="download-text">Als TXT herunterladen</button>
+                        <button class="result-btn" id="download-pdf">Als PDF herunterladen</button>
+                        <button class="result-btn" id="download-docx">Als DOCX herunterladen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-text">
+            <p>Copyright © 2024 by Rassoul Ebrahimi | Alle Rechte vorbehalten.</p>
+        </div>
+
+        <div class="footer-iconTop">
+            <a href="#"><i class="bx bx-up-arrow-alt"></i></a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
