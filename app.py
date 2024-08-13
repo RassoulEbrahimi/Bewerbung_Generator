@@ -206,6 +206,10 @@ def api_generate_bewerbung():
         return jsonify({"error": error}), 500
     return jsonify({"bewerbung": bewerbung, "estimated_cost": f"${cost:.6f}"})
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
