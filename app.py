@@ -4,7 +4,7 @@ import logging
 import time
 from datetime import datetime
 from functools import wraps
-
+from werkzeug.utils import url_quote
 import tiktoken
 from flask import Flask, request, jsonify
 from flask_cors import CORS
