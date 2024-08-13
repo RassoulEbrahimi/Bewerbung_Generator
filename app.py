@@ -9,7 +9,7 @@ import tiktoken
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
-from openai import OpenAI
+import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 # Load environment variables
@@ -24,7 +24,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "https://yourdomain.com"}})  # Replace with your frontend domain
 
 # Initialize OpenAI client
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 def calculate_cost(input_tokens, output_tokens, model="gpt-3.5-turbo-0125", is_batch=False):
     input_price = 0.50
