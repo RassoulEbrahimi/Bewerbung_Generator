@@ -11,9 +11,6 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
-import threading
-import queue
-
 
 # Load environment variables
 load_dotenv()
@@ -24,12 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-# CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
-
-
-
+CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
 
 @app.after_request
 def after_request(response):
@@ -38,7 +30,6 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
-
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -229,46 +220,24 @@ def api_generate_bewerbung():
 
         if len(lebenslauf) > 5000 or len(stellenanzeige) > 5000:
             logger.warning("Lebenslauf or stellenanzeige exceeds 5000 characters")
-            return jsonify({"error": "Lebenslauf oder Stellenanzeige zu lang. Bitte beschränken Sie sich auf maximal 5000 Zeichen pro Feld."}), 400
+            return jsonify({"error": "Lebenslauf oder Stellenanzeige zu lang. Maximal 5000 Zeichen erlaubt."}), 400
 
-        logger.info("Starting bewerbung generation")
-        generation_start_time = time.time()
-        bewerbung, error, cost = generate_bewerbung(lebenslauf, stellenanzeige)
-        generation_time = time.time() - generation_start_time
-        logger.info(f"Bewerbung generation completed in {generation_time:.2f} seconds")
+        bewerbung, error_message, cost = generate_bewerbung(lebenslauf, stellenanzeige)
         
-        if error:
-            logger.error(f"Error generating application: {error}")
-            return jsonify({"error": error}), 500
+        if error_message:
+            return jsonify({"error": error_message}), 500
 
-        total_time = time.time() - start_time
-        logger.info(f"Application generated successfully. Cost: ${cost:.6f}, Total time: {total_time:.2f} seconds")
-        return jsonify({"bewerbung": bewerbung, "estimated_cost": f"${cost:.6f}"})
+        response = {
+            "bewerbung": bewerbung,
+            "estimated_cost": f"${cost:.6f}"
+        }
 
-    except openai.error.OpenAIError as e:
-        logger.error(f"OpenAI API error: {str(e)}")
-        return jsonify({"error": "Ein Fehler ist bei der Kommunikation mit dem OpenAI-Dienst aufgetreten. Bitte versuchen Sie es später erneut."}), 503
+        logger.info(f"Request processed in {time.time() - start_time:.2f} seconds")
+        return jsonify(response), 200
 
     except Exception as e:
-        logger.exception("Unexpected error in api_generate_bewerbung")
-        return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."}), 500
-
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({"status": "healthy"}), 200
-
-
-@app.route('/cors-test', methods=['GET', 'OPTIONS'])
-def cors_test():
-    return jsonify({"message": "CORS is working"}), 200
-
-
-@app.route('/test', methods=['GET', 'OPTIONS'])
-def test():
-    if request.method == "OPTIONS":
-        return jsonify({"message": "CORS preflight request successful"}), 200
-    return jsonify({"message": "Test successful"}), 200
+        logger.error(f"Unexpected error: {str(e)}")
+        return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten."}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
-
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
