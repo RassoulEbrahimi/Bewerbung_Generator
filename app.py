@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "https://yourdomain.com"}})  # Replace with your frontend domain
+CORS(app, resources={r"/api/*": {"origins": ["https://www.xbewerbung.com", "https://xbewerbung.com"]}})   # Replace with your frontend domain
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
