@@ -201,26 +201,37 @@ Bewerbung als {info['job_position']}
 @rate_limit(max_per_minute=10)
 def api_generate_bewerbung():
     try:
+        logger.info("Received request for generate_bewerbung")
+        start_time = time.time()
+
         data = request.json
         if not data:
+            logger.warning("No data received in request")
             return jsonify({"error": "Keine Daten erhalten. Bitte senden Sie einen gültigen JSON-Body."}), 400
 
         lebenslauf = data.get('lebenslauf', '')
         stellenanzeige = data.get('stellenanzeige', '')
 
         if not lebenslauf or not stellenanzeige:
+            logger.warning("Missing lebenslauf or stellenanzeige in request")
             return jsonify({"error": "Lebenslauf und Stellenanzeige sind erforderlich."}), 400
 
         if len(lebenslauf) > 5000 or len(stellenanzeige) > 5000:
+            logger.warning("Lebenslauf or stellenanzeige exceeds 5000 characters")
             return jsonify({"error": "Lebenslauf oder Stellenanzeige zu lang. Bitte beschränken Sie sich auf maximal 5000 Zeichen pro Feld."}), 400
 
+        logger.info("Starting bewerbung generation")
+        generation_start_time = time.time()
         bewerbung, error, cost = generate_bewerbung(lebenslauf, stellenanzeige)
+        generation_time = time.time() - generation_start_time
+        logger.info(f"Bewerbung generation completed in {generation_time:.2f} seconds")
         
         if error:
             logger.error(f"Error generating application: {error}")
             return jsonify({"error": error}), 500
 
-        logger.info(f"Application generated successfully. Cost: ${cost:.6f}")
+        total_time = time.time() - start_time
+        logger.info(f"Application generated successfully. Cost: ${cost:.6f}, Total time: {total_time:.2f} seconds")
         return jsonify({"bewerbung": bewerbung, "estimated_cost": f"${cost:.6f}"})
 
     except openai.error.OpenAIError as e:
