@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout
+            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
 
             const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
                 method: 'POST',
@@ -114,6 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({ lebenslauf, stellenanzeige }),
                 mode: 'cors',
                 credentials: 'same-origin',
+                credentials: 'omit',
+                signal: controller.signal
             });
 
             clearTimeout(timeoutId);
@@ -132,6 +134,23 @@ document.addEventListener('DOMContentLoaded', function() {
             throw error;
         }
     }
+
+    async function testBackend() {
+        try {
+            const response = await fetch('https://bewerbung-generator.onrender.com/test', {
+                method: 'GET',
+                mode: 'cors',
+                credentials: 'omit'
+            });
+            const data = await response.json();
+            console.log('Test response:', data);
+        } catch (error) {
+            console.error('Test error:', error);
+        }
+    }
+    
+    // Call this function when the page loads
+    document.addEventListener('DOMContentLoaded', testBackend);
 
     // Form submission event listener
     uploadForm.addEventListener('submit', async function(e) {

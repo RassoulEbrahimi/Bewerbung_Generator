@@ -21,7 +21,18 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
+
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
+
 
 
 # Initialize OpenAI client
@@ -244,6 +255,10 @@ def health_check():
 @app.route('/cors-test', methods=['GET', 'OPTIONS'])
 def cors_test():
     return jsonify({"message": "CORS is working"}), 200
+
+@app.route('/test', methods=['GET', 'OPTIONS'])
+def test():
+    return jsonify({"message": "Test successful"}), 200
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
