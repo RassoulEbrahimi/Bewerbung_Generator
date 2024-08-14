@@ -2,9 +2,12 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="description" content="xBewerbung - KI-gestützter Generator für angepasste Bewerbungen. Erstellen Sie professionelle Bewerbungsunterlagen in Sekunden.">
+    <meta name="keywords" content="Bewerbung, bewerben, KI, Generator, Anschreiben, Lebenslauf, Jobsuche">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bewerbung Generator</title>
+    <title>xBewerbung - KI-gestützter Bewerbungsgenerator</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
@@ -38,15 +41,15 @@
                 <img src="bewerbung.png" alt="Bewerbung Generator">
             </div>
             <div class="project-description">
-                <h2>Bewerbung Generator</h2>
-                <p>Erstellen Sie Ihre maßgeschneiderte Bewerbung mit Hilfe von KI</p>
+                <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
+                <p>Erstellen Sie Ihre individuelle Bewerbung mit KI auf xBewerbung.com</p>
  
                 <div class="input-toggle">
                     <button id="toggle-file" class="btn active">Datei hochladen</button>
                     <button id="toggle-text" class="btn">Text eingeben</button>
                 </div>
                            
-                <form id="upload-form" enctype="multipart/form-data">
+                <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data">
                     <div id="file-inputs">
                         <div class="file-input-container">
                             <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
@@ -93,7 +96,7 @@
 
     <footer class="footer">
         <div class="footer-text">
-            <p>Copyright © 2024 by Rassoul Ebrahimi | Alle Rechte vorbehalten.</p>
+            <p>Copyright © 2024 xBewerbung | Eine Kreation von R$L | Alle Rechte vorbehalten.</p>
         </div>
 
         <div class="footer-iconTop">
