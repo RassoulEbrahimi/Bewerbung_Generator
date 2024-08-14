@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/generate_bewerbung": ["https://www.xbewerbung.com", "https://xbewerbung.com"]}})   # Replace with your frontend domain
+CORS(app, resources={r"/generate_bewerbung": {"origins": ["https://www.xbewerbung.com", "https://xbewerbung.com"]}})
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -194,17 +194,36 @@ Bewerbung als {info['job_position']}
 @app.route('/generate_bewerbung', methods=['POST'])
 @rate_limit(max_per_minute=10)
 def api_generate_bewerbung():
-    data = request.json
-    lebenslauf = data.get('lebenslauf', '')
-    stellenanzeige = data.get('stellenanzeige', '')
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "Keine Daten erhalten. Bitte senden Sie einen gültigen JSON-Body."}), 400
 
-    if not lebenslauf or not stellenanzeige:
-        return jsonify({"error": "Lebenslauf und Stellenanzeige sind erforderlich."}), 400
+        lebenslauf = data.get('lebenslauf', '')
+        stellenanzeige = data.get('stellenanzeige', '')
 
-    bewerbung, error, cost = generate_bewerbung(lebenslauf, stellenanzeige)
-    if error:
-        return jsonify({"error": error}), 500
-    return jsonify({"bewerbung": bewerbung, "estimated_cost": f"${cost:.6f}"})
+        if not lebenslauf or not stellenanzeige:
+            return jsonify({"error": "Lebenslauf und Stellenanzeige sind erforderlich."}), 400
+
+        if len(lebenslauf) > 5000 or len(stellenanzeige) > 5000:
+            return jsonify({"error": "Lebenslauf oder Stellenanzeige zu lang. Bitte beschränken Sie sich auf maximal 5000 Zeichen pro Feld."}), 400
+
+        bewerbung, error, cost = generate_bewerbung(lebenslauf, stellenanzeige)
+        
+        if error:
+            logger.error(f"Error generating application: {error}")
+            return jsonify({"error": error}), 500
+
+        logger.info(f"Application generated successfully. Cost: ${cost:.6f}")
+        return jsonify({"bewerbung": bewerbung, "estimated_cost": f"${cost:.6f}"})
+
+    except openai.error.OpenAIError as e:
+        logger.error(f"OpenAI API error: {str(e)}")
+        return jsonify({"error": "Ein Fehler ist bei der Kommunikation mit dem OpenAI-Dienst aufgetreten. Bitte versuchen Sie es später erneut."}), 503
+
+    except Exception as e:
+        logger.exception("Unexpected error in api_generate_bewerbung")
+        return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -212,4 +231,4 @@ def health_check():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=False)

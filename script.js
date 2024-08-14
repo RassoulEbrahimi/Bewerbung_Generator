@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadDocxBtn = document.getElementById('download-docx');
     const downloadTextBtn = document.getElementById('download-text');
     const copyTextBtn = document.getElementById('copy-text');
+    const loadingIndicator = document.getElementById('loading-indicator');
 
     // Toggle between file and text inputs
     toggleFileBtn.addEventListener('click', function() {
@@ -71,7 +72,38 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Modify the form submission to include smooth scrolling
+    // Function to generate Bewerbung with improved error handling and timeout
+    async function generateBewerbung(lebenslauf, stellenanzeige) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lebenslauf, stellenanzeige }),
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Error:', error);
+            if (error.name === 'AbortError') {
+                throw new Error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es später erneut.');
+            }
+            throw error;
+        }
+    }
+
+    // Form submission event listener
     uploadForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -100,45 +132,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
         }
-        try {
-            // ... (existing code for API call and response handling) ...
-
-            // Show the result section
-            resultSection.style.display = 'block';
-
-            // Smooth scroll to the result section
-            resultSection.scrollIntoView({ behavior: 'smooth' });
-
-            // Show result buttons
-            resultButtons.forEach(btn => {
-                btn.style.display = 'block';
-            });
-
-        } catch (error) {
-            console.error('Error:', error);
-            generatedContent.innerHTML = '<p>Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.</p>';
-        }
 
         // Show loading indicator
-        generatedContent.innerHTML = '<p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>';
-        resultSection.style.display = 'block';
+        loadingIndicator.style.display = 'block';
+        resultSection.style.display = 'none';
 
         try {
-            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ lebenslauf, stellenanzeige }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const data = await generateBewerbung(lebenslauf, stellenanzeige);
             
-            // In the part where you handle the API response
+            // Handle the response
             generatedContent.innerHTML = `<pre>${data.bewerbung}</pre>`;
             costInfo.textContent = `Geschätzte Kosten: ${data.estimated_cost}`;
             
@@ -146,11 +148,20 @@ document.addEventListener('DOMContentLoaded', function() {
             downloadPdfBtn.style.display = 'inline-block';
             downloadDocxBtn.style.display = 'inline-block';
 
+            // Show result buttons
+            resultButtons.forEach(btn => btn.style.display = 'block');
+
+            // Show result section and hide loading indicator
+            resultSection.style.display = 'block';
+            loadingIndicator.style.display = 'none';
+
             // Scroll to the result section
             resultSection.scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
             console.error('Error:', error);
-            generatedContent.innerHTML = '<p>Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.</p>';
+            generatedContent.innerHTML = `<p>Es ist ein Fehler aufgetreten: ${error.message}</p>`;
+            resultSection.style.display = 'block';
+            loadingIndicator.style.display = 'none';
         }
     });
 
