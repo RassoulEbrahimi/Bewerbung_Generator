@@ -72,6 +72,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+
+
+    async function testCORS() {
+        try {
+            const response = await fetch('https://bewerbung-generator.onrender.com/cors-test', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log('CORS test response:', data);
+        } catch (error) {
+            console.error('CORS test error:', error);
+        }
+    }
+    
+    // Call this function to test
+    testCORS();
+
+
+
     // Function to generate Bewerbung with improved error handling and timeout
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
@@ -82,11 +109,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Origin': 'https://xbewerbung.com'
+                    'Accept': 'application/json',
                 },
                 body: JSON.stringify({ lebenslauf, stellenanzeige }),
-                credentials: 'include',
-                signal: controller.signal
+                mode: 'cors',
+                credentials: 'same-origin',
             });
 
             clearTimeout(timeoutId);
