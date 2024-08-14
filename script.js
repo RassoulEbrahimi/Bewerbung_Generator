@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resultSection.style.display = 'block';
 
         try {
-            const response = await fetch('http://localhost:5000/generate_bewerbung', {
+            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
