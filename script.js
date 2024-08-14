@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+            const timeoutId = setTimeout(() => controller.abort(), 120000); // 120 seconds timeout
 
             const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
                 method: 'POST',
@@ -114,8 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(timeoutId);
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             return await response.json();
