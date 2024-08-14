@@ -21,7 +21,13 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/generate_bewerbung": {"origins": ["https://www.xbewerbung.com", "https://xbewerbung.com"]}})
+CORS(app, resources={
+    r"/generate_bewerbung": {
+        "origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))

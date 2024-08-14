@@ -82,8 +82,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Origin': 'https://xbewerbung.com'
                 },
                 body: JSON.stringify({ lebenslauf, stellenanzeige }),
+                credentials: 'include',
                 signal: controller.signal
             });
 
