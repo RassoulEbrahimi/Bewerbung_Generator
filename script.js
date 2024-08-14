@@ -78,15 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const response = await fetch('https://bewerbung-generator.onrender.com/cors-test', {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                mode: 'cors',
+                credentials: 'include'
             });
-    
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-    
             const data = await response.json();
             console.log('CORS test response:', data);
         } catch (error) {
@@ -94,8 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Call this function to test
-    testCORS();
+    // Call this function when the page loads
+    document.addEventListener('DOMContentLoaded', testCORS);
 
 
 

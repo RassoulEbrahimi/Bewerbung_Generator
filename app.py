@@ -29,9 +29,8 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', 'https://xbewerbung.com')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
-
-
 
 
 # Initialize OpenAI client
@@ -251,9 +250,13 @@ def api_generate_bewerbung():
 def health_check():
     return jsonify({"status": "healthy"}), 200
 
+
 @app.route('/cors-test', methods=['GET', 'OPTIONS'])
 def cors_test():
-    return jsonify({"message": "CORS is working"}), 200
+    if request.method == "OPTIONS":
+        return '', 204
+    return jsonify({"message": "CORS test successful"}), 200
+
 
 @app.route('/test', methods=['GET', 'OPTIONS'])
 def test():
@@ -262,5 +265,5 @@ def test():
     return jsonify({"message": "Test successful"}), 200
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(host='0.0.0.0', port=5000)
+
