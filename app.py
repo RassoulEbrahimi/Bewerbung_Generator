@@ -21,17 +21,14 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-app = Flask(__name__)
-
-# CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
-# CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
+CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
 
 
 @app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://xbewerbung.com'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'https://xbewerbung.com')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     return response
 
 
@@ -260,8 +257,8 @@ def cors_test():
 
 @app.route('/test', methods=['GET', 'OPTIONS'])
 def test():
-    if request.method == 'OPTIONS':
-        return '', 204
+    if request.method == "OPTIONS":
+        return jsonify({"message": "CORS preflight request successful"}), 200
     return jsonify({"message": "Test successful"}), 200
 
 if __name__ == '__main__':
