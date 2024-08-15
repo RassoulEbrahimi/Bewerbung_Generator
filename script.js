@@ -72,43 +72,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-
-
-    async function testCORS() {
-        try {
-            const response = await fetch('https://bewerbung-generator.onrender.com/cors-test', {
-                method: 'GET',
-                mode: 'cors',
-                credentials: 'include'
-            });
-            const data = await response.json();
-            console.log('CORS test response:', data);
-        } catch (error) {
-            console.error('CORS test error:', error);
-        }
-    }
-    
-    // Call this function when the page loads
-    document.addEventListener('DOMContentLoaded', testCORS);
-
-
-
     // Function to generate Bewerbung with improved error handling and timeout
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 seconds timeout
 
-
-            const response = await fetch('https://bewerbung-generator.onrender.com', {
+            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ lebenslauf, stellenanzeige }),
                 mode: 'cors',
-                credentials: 'same-origin',
-                credentials: 'omit',
+                credentials: 'omit',  // Ensure only one credentials setting is used
                 signal: controller.signal
             });
 
@@ -127,23 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
             throw error;
         }
     }
-
-    async function testBackend() {
-        try {
-            const response = await fetch('https://bewerbung-generator.onrender.com/test', {
-                method: 'GET',
-                mode: 'cors',
-                credentials: 'omit'
-            });
-            const data = await response.json();
-            console.log('Test response:', data);
-        } catch (error) {
-            console.error('Test error:', error);
-        }
-    }
-    
-    // Call this function when the page loads
-    document.addEventListener('DOMContentLoaded', testBackend);
 
     // Form submission event listener
     uploadForm.addEventListener('submit', async function(e) {

@@ -4,7 +4,6 @@ import logging
 import time
 from datetime import datetime
 from functools import wraps
-from werkzeug.utils import url_quote
 import tiktoken
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -57,7 +56,7 @@ def rate_limit(max_per_minute):
         def wrapper(*args, **kwargs):
             elapsed = time.time() - last_called[0]
             left_to_wait = min_interval - elapsed
-            if left_to_wait > 0:
+            if (left_to_wait > 0):
                 time.sleep(left_to_wait)
             ret = func(*args, **kwargs)
             last_called[0] = time.time()
