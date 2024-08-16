@@ -240,6 +240,10 @@ def api_generate_bewerbung():
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten."}), 500
+    
+@app.route('/')
+def home():
+    return "Hello, World! Render Flask Deployment Testing!"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
