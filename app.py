@@ -243,7 +243,7 @@ def api_generate_bewerbung():
     
 @app.route('/')
 def index():
-    return "Hello, World! Render Flask Deployment Testing! Application is running"
+    return "Hello, World! Application is running"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
