@@ -242,8 +242,8 @@ def api_generate_bewerbung():
         return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten."}), 500
     
 @app.route('/')
-def home():
-    return "Hello, World! Render Flask Deployment Testing!"
+def index():
+    return "Hello, World! Render Flask Deployment Testing! Application is running"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
