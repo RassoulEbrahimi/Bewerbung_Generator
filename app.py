@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"]}}, supports_credentials=True)
 
-
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -49,7 +48,7 @@ def rate_limit(max_per_minute):
         def wrapper(*args, **kwargs):
             elapsed = time.time() - last_called[0]
             left_to_wait = min_interval - elapsed
-            if (left_to_wait > 0):
+            if left_to_wait > 0:
                 time.sleep(left_to_wait)
             ret = func(*args, **kwargs)
             last_called[0] = time.time()
@@ -191,7 +190,6 @@ Bewerbung als {info['job_position']}
     
     return full_bewerbung.strip()
 
-
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', 'https://rassoulebrahimi.github.io')
@@ -199,7 +197,6 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
-
 
 @app.route('/generate_bewerbung', methods=['POST'])
 @rate_limit(max_per_minute=10)
