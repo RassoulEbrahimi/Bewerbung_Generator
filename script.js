@@ -72,45 +72,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-// Function to generate Bewerbung with improved error handling and timeout
-async function generateBewerbung(lebenslauf, stellenanzeige) {
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 seconds timeout
+    // Function to generate Bewerbung with improved error handling and timeout
+    async function generateBewerbung(lebenslauf, stellenanzeige) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 seconds timeout
 
-        const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ lebenslauf, stellenanzeige }),
-            mode: 'cors',
-            credentials: 'omit',  // Ensure only one credentials setting is used
-            signal: controller.signal
-        });
+            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ lebenslauf, stellenanzeige }),
+                mode: 'cors',
+                credentials: 'omit',  // Ensure only one credentials setting is used
+                signal: controller.signal
+            });
 
-        clearTimeout(timeoutId);
+            clearTimeout(timeoutId);
 
-        if (!response.ok) {
-            if (response.status === 0) {
-                throw new Error('Network error. This might be a CORS issue. Please check the server configuration.');
+            if (!response.ok) {
+                if (response.status === 0) {
+                    throw new Error('Network error. This might be a CORS issue. Please check the server configuration.');
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
 
-        return await response.json();
-    } catch (error) {
-        console.error('Error in generateBewerbung:', error);
-        if (error.name === 'AbortError') {
-            throw new Error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es später erneut.');
+            return await response.json();
+        } catch (error) {
+            console.error('Error in generateBewerbung:', error);
+            if (error.name === 'AbortError') {
+                throw new Error('Die Anfrage hat zu lange gedauert. Bitte versuchen Sie es später erneut.');
+            }
+            if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+                throw new Error('Netzwerkfehler. Dies könnte ein CORS-Problem sein. Bitte überprüfen Sie die Serverkonfiguration.');
+            }
+            // Rethrow the error to be handled by the calling function
+            throw error;
         }
-        if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-            throw new Error('Netzwerkfehler. Dies könnte ein CORS-Problem sein. Bitte überprüfen Sie die Serverkonfiguration.');
-        }
-        // Rethrow the error to be handled by the calling function
-        throw error;
     }
-}
 
     // Form submission event listener
     uploadForm.addEventListener('submit', async function(e) {

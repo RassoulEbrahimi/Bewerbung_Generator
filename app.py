@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": ["https://xbewerbung.com", "https://www.xbewerbung.com"]}})
+CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io"]}})
 
 
 # Initialize OpenAI client
@@ -194,7 +194,7 @@ Bewerbung als {info['job_position']}
 
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://xbewerbung.com')
+    response.headers.add('Access-Control-Allow-Origin', 'https://rassoulebrahimi.github.io')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
