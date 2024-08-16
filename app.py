@@ -194,6 +194,16 @@ Bewerbung als {info['job_position']}
     
     return full_bewerbung.strip()
 
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'https://xbewerbung.com')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
+
+
 @app.route('/generate_bewerbung', methods=['POST'])
 @rate_limit(max_per_minute=10)
 def api_generate_bewerbung():
