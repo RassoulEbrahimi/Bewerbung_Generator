@@ -12,21 +12,21 @@
 </head>
 <body>
     <header class="header">
-        <a href="#" class="logo">RSL.</a>
+        <a href="#" class="logo" aria-label="Zur Startseite" title="Zur Startseite">RSL.</a>
 
         <nav class="navbar">
-            <a href="https://rassoulebrahimi.github.io/website/">Startseite</a>
-            <a href="https://rassoulebrahimi.github.io/website/#about">Profil</a>
-            <a href="https://rassoulebrahimi.github.io/website/#education">Bildungsweg</a>
-            <a href="https://rassoulebrahimi.github.io/website/#skills">Skills</a>
-            <a href="https://rassoulebrahimi.github.io/website/#contact">Kontakt</a>
+            <a href="https://rassoulebrahimi.github.io/website/" aria-label="Startseite" title="Startseite">Startseite</a>
+            <a href="https://rassoulebrahimi.github.io/website/#about" aria-label="Profil" title="Profil">Profil</a>
+            <a href="https://rassoulebrahimi.github.io/website/#education" aria-label="Bildungsweg" title="Bildungsweg">Bildungsweg</a>
+            <a href="https://rassoulebrahimi.github.io/website/#skills" aria-label="Skills" title="Skills">Skills</a>
+            <a href="https://rassoulebrahimi.github.io/website/#contact" aria-label="Kontakt" title="Kontakt">Kontakt</a>
             <div class="dropdown">
-                <button class="dropbtn">Projekte<i class="fa fa-caret-down"></i></button>
+                <button class="dropbtn" aria-label="Projekte" title="Projekte">Projekte<i class="fa fa-caret-down"></i></button>
                 <div class="dropdown-content">
-                    <a href="https://rassoulebrahimi.github.io/website/projects/project1/project.html">Projekt #1</a>
-                    <a href="https://rassoulebrahimi.github.io/website/projects/project2/project.html">Projekt #2</a>
-                    <a href="https://rassoulebrahimi.github.io/website/projects/project3/project.html">Projekt #3</a>
-                    <a href="https://xbewerbung.com/">xBewerbung</a>
+                    <a href="https://rassoulebrahimi.github.io/website/projects/project1/project.html" aria-label="Projekt 1" title="Projekt 1">Projekt #1</a>
+                    <a href="https://rassoulebrahimi.github.io/website/projects/project2/project.html" aria-label="Projekt 2" title="Projekt 2">Projekt #2</a>
+                    <a href="https://rassoulebrahimi.github.io/website/projects/project3/project.html" aria-label="Projekt 3" title="Projekt 3">Projekt #3</a>
+                    <a href="https://xbewerbung.com/" aria-label="xBewerbung" title="xBewerbung">xBewerbung</a>
                 </div>
             </div>
             <span class="active-nav"></span>
@@ -38,50 +38,50 @@
         <!-- <h2>Project Showcase</h2> -->
         <div class="project-content">
             <div class="project-img">
-                <img src="bewerbung.png" alt="Bewerbung Generator">
+                <img src="bewerbung.png" alt="Bewerbung Generator" aria-label="Bewerbung Generator">
             </div>
             <div class="project-description">
                 <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
                 <p>Erstellen Sie Ihre individuelle Bewerbung mit KI auf xBewerbung.com</p>
  
                 <div class="input-toggle">
-                    <button id="toggle-file" class="btn active">Datei hochladen</button>
-                    <button id="toggle-text" class="btn">Text eingeben</button>
+                    <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen">Datei hochladen</button>
+                    <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben">Text eingeben</button>
                 </div>
                            
                 <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data">
                     <div id="file-inputs">
                         <div class="file-input-container">
                             <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
-                            <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt">
+                            <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt" aria-label="Lebenslauf hochladen" title="Lebenslauf hochladen">
                         </div>
             
                         <div class="file-input-container">
                             <label for="jobbeschreibung">Jobbeschreibung (PDF, DOCX oder TXT):</label>
-                            <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt">
+                            <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt" aria-label="Jobbeschreibung hochladen" title="Jobbeschreibung hochladen">
                         </div>
                     </div>
 
                     <div id="text-inputs" style="display: none;">
                         <div class="text-input-container">
                             <label for="lebenslauf-text">Lebenslauf (Text):</label>
-                            <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein"></textarea>
+                            <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein" aria-label="Lebenslauf eingeben" title="Lebenslauf eingeben"></textarea>
                         </div>
             
                         <div class="text-input-container">
                             <label for="jobbeschreibung-text">Jobbeschreibung (Text):</label>
-                            <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein"></textarea>
+                            <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein" aria-label="Jobbeschreibung eingeben" title="Jobbeschreibung eingeben"></textarea>
                         </div>
                     </div>
 
 
                     <div class="btn-box">
-                        <button type="submit" class="btn">Bewerbung generieren</button>
+                        <button type="submit" class="btn" aria-label="Bewerbung generieren" title="Bewerbung generieren">Bewerbung generieren</button>
                     </div>
                 </form>
 
                 <div id="loading-indicator" style="display: none;">
-                    <div class="spinner"></div>
+                    <div class="spinner" aria-label="Laden..." title="Laden..."></div>
                     <p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>
                 </div>
                 
@@ -90,10 +90,10 @@
                     <div id="generated-content"></div>
                     <div id="cost-info"></div>
                     <div class="result-buttons">
-                        <button class="result-btn" id="copy-text">In die Zwischenablage kopieren</button>
-                        <button class="result-btn" id="download-text">Als TXT herunterladen</button>
-                        <button class="result-btn" id="download-pdf">Als PDF herunterladen</button>
-                        <button class="result-btn" id="download-docx">Als DOCX herunterladen</button>
+                        <button class="result-btn" id="copy-text" aria-label="In die Zwischenablage kopieren" title="In die Zwischenablage kopieren">In die Zwischenablage kopieren</button>
+                        <button class="result-btn" id="download-text" aria-label="Als TXT herunterladen" title="Als TXT herunterladen">Als TXT herunterladen</button>
+                        <button class="result-btn" id="download-pdf" aria-label="Als PDF herunterladen" title="Als PDF herunterladen">Als PDF herunterladen</button>
+                        <button class="result-btn" id="download-docx" aria-label="Als DOCX herunterladen" title="Als DOCX herunterladen">Als DOCX herunterladen</button>
                     </div>
                 </div>
             </div>
@@ -106,7 +106,7 @@
         </div>
 
         <div class="footer-iconTop">
-            <a href="#"><i class="bx bx-up-arrow-alt"></i></a>
+            <a href="#" aria-label="Zurück nach oben" title="Zurück nach oben"><i class="bx bx-up-arrow-alt"></i></a>
         </div>
     </footer>
 
