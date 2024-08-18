@@ -610,7 +610,7 @@ section {
     }
     .text-input-container textarea {
         background: transparent;
-        backdrop-filter: blur(50px);
+        backdrop-filter: blur(55px);
         /* background-color:var(--text-color); */
         box-shadow: 0 0 55px rgba(0, 0, 0, 0.1);
         color: #081b29;
