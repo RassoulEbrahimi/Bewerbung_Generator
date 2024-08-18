@@ -620,6 +620,9 @@ section {
     .file-input-container label {
         color: #081b29;
     }
+    .footer {
+        display: none;
+    }
     /* .project-content { flex-direction: column; } */
     /* .project-img img { width: 70vw; margin-bottom: 4rem; } */
     /* .file-input-container input[type="file"] { font-size: 1.4rem; } */
