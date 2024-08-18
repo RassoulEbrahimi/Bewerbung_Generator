@@ -6,37 +6,20 @@
     <meta name="keywords" content="Bewerbung, bewerben, KI, Generator, Anschreiben, Lebenslauf, Jobsuche">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>xBewerbung - KI-gestützter Bewerbungsgenerator</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-
     <!-- Video background for mobile views -->
     <video class="video-background" autoplay muted loop>
         <source src="xBew.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-
-
     <header class="header">
         <a href="#" class="logo" aria-label="Zur Startseite" title="Zur Startseite">RSL.</a>
-
         <nav class="navbar">
-            <a href="https://rassoulebrahimi.github.io/website/" aria-label="Startseite" title="Startseite">Startseite</a>
-            <a href="https://rassoulebrahimi.github.io/website/#about" aria-label="Profil" title="Profil">Profil</a>
-            <a href="https://rassoulebrahimi.github.io/website/#education" aria-label="Bildungsweg" title="Bildungsweg">Bildungsweg</a>
-            <a href="https://rassoulebrahimi.github.io/website/#skills" aria-label="Skills" title="Skills">Skills</a>
-            <a href="https://rassoulebrahimi.github.io/website/#contact" aria-label="Kontakt" title="Kontakt">Kontakt</a>
-            <div class="dropdown">
-                <button class="dropbtn" aria-label="Projekte" title="Projekte">Projekte<i class="fa fa-caret-down"></i></button>
-                <div class="dropdown-content">
-                    <a href="https://rassoulebrahimi.github.io/website/projects/project1/project.html" aria-label="Projekt 1" title="Projekt 1">Projekt #1</a>
-                    <a href="https://rassoulebrahimi.github.io/website/projects/project2/project.html" aria-label="Projekt 2" title="Projekt 2">Projekt #2</a>
-                    <a href="https://rassoulebrahimi.github.io/website/projects/project3/project.html" aria-label="Projekt 3" title="Projekt 3">Projekt #3</a>
-                    <a href="https://xbewerbung.com/" aria-label="xBewerbung" title="xBewerbung">xBewerbung</a>
-                </div>
-            </div>
             <span class="active-nav"></span>
             <span class="animate" style="--i:2;"></span>
         </nav>
@@ -55,7 +38,7 @@
                     sizes="(max-width: 320px) 280px,
                             (max-width: 640px) 600px,
                             1200px"
-                    alt=""Bewerbung Generator" aria-label="Bewerbung Generator">
+                    alt="Bewerbung Generator" aria-label="Bewerbung Generator">
             </div>
             <div class="project-description">
                 <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
@@ -128,5 +111,16 @@
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                }, function(error) {
+                    console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
 </body>
 </html>

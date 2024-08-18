@@ -1,0 +1,22 @@
+{
+    "name": "xBewerbung",
+    "short_name": "xBewerbung",
+    "description": "KI-gestützter Generator für angepasste Bewerbungen.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#081b29",
+    "theme_color": "#00abf0",
+    "icons": [
+      {
+        "src": "icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "icons/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
