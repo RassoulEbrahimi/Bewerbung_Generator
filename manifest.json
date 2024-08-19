@@ -2,7 +2,7 @@
     "name": "xBewerbung",
     "short_name": "xBewerbung",
     "description": "KI-gestützter Generator für angepasste Bewerbungen.",
-    "start_url": "/Bewerbung_Generator/",
+    "start_url": "https://rassoulebrahimi.github.io/Bewerbung_Generator/",
     "display": "standalone",
     "background_color": "#081b29",
     "theme_color": "#00abf0",
