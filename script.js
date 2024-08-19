@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayFileName(input) {
         const fileName = input.files[0].name;
         const fileNameDisplay = input.nextElementSibling || document.createElement('span');
-        fileNameDisplay.textContent = `Selected file: ${fileName}`;
+        fileNameDisplay.textContent = `ausgewählte Datei: ${fileName}`;
         fileNameDisplay.className = 'file-name-display';
         if (!input.nextElementSibling) {
             input.parentNode.insertBefore(fileNameDisplay, input.nextSibling);
