@@ -24,7 +24,13 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
             .then(response => {
-                return response || fetch(event.request);
+                // Return the cached resource if available, otherwise fetch it
+                return response || fetch(event.request).catch(() => {
+                    // If the resource is not in the cache and fails to fetch, return a fallback response
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('/index.html'); // Fallback to index.html for navigational requests
+                    }
+                });
             })
     );
 });
