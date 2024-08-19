@@ -521,7 +521,7 @@ section {
     color: var(--bg-color); /* Text color for the button */
     background-color: var(--light-blue);
     border: 1px solid #fff;
-    border-radius: 0.4rem; /* Rounded corners for the button */
+    border-radius: 0.4rem; /* Rounded corners for the button*/
     padding: 0.5rem 1rem; /* Padding inside the button */
     margin-right: 1rem; /* Margin between button and file name */
     cursor: pointer; /* Change cursor to pointer on hover */
