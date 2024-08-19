@@ -13,19 +13,17 @@
 </head>
 <body>
     <!-- Video background for mobile views -->
-    <video class="video-background" autoplay muted loop>
+    <video class="video-background" autoplay muted loop aria-hidden="true">
         <source src="xBew.mp4" type="video/mp4">
         Your browser does not support the video tag.
     </video>
-    <header class="header">
+
+    <header class="header" role="banner">
         <a href="#" class="logo" aria-label="Zur Startseite" title="Zur Startseite">RSL.</a>
-        <!-- <nav class="navbar">
-            <span class="active-nav"></span>
-            <span class="animate" style="--i:2;"></span>
-        </nav> -->
     </header>
 
-    <section class="project-showcase" id="home">
+    <main class="main-content" id="home" role="main">
+        <section class="project-showcase">
         <div class="project-content">
             <div class="project-img">
                 <img src="bewerbung.webp"
@@ -42,49 +40,40 @@
             <div class="project-description">
                 <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
                 <p>Erstellen Sie Ihre individuelle Bewerbung mit KI</p>
- 
-                <div class="input-toggle">
-                    <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen">Datei hochladen</button>
-                    <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben">Text eingeben</button>
+                    <div class="input-toggle" role="tablist">
+                        <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen" role="tab" aria-selected="true">Datei hochladen</button>
+                        <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben" role="tab" aria-selected="false">Text eingeben</button>
                 </div>
-                           
-                <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data">
-                    <div id="file-inputs">
+                    <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data" aria-labelledby="form-title">
+                        <div id="file-inputs" aria-live="polite">
                         <div class="file-input-container">
                             <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
                             <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt" aria-label="Lebenslauf hochladen" title="Lebenslauf hochladen">
                         </div>
-            
                         <div class="file-input-container">
                             <label for="jobbeschreibung">Jobbeschreibung (PDF, DOCX oder TXT):</label>
                             <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt" aria-label="Jobbeschreibung hochladen" title="Jobbeschreibung hochladen">
                         </div>
                     </div>
-
-                    <div id="text-inputs" style="display: none;">
+                        <div id="text-inputs" style="display: none;" aria-live="polite">
                         <div class="text-input-container">
                             <label for="lebenslauf-text">Lebenslauf (Text):</label>
                             <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein" aria-label="Lebenslauf eingeben" title="Lebenslauf eingeben"></textarea>
                         </div>
-            
                         <div class="text-input-container">
                             <label for="jobbeschreibung-text">Jobbeschreibung (Text):</label>
                             <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein" aria-label="Jobbeschreibung eingeben" title="Jobbeschreibung eingeben"></textarea>
                         </div>
                     </div>
-
-
                     <div class="btn-box">
                         <button type="submit" class="btn" aria-label="Bewerbung generieren" title="Bewerbung generieren">Bewerbung generieren</button>
                     </div>
                 </form>
-
-                <div id="loading-indicator" style="display: none;">
+                    <div id="loading-indicator" style="display: none;" aria-live="assertive">
                     <div class="spinner" aria-label="Laden..." title="Laden..."></div>
                     <p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>
                 </div>
-                
-                <div id="result-section" style="display: none;">
+                    <div id="result-section" style="display: none;" aria-live="polite">
                     <h3>Ihre generierte Bewerbung</h3>
                     <div id="generated-content"></div>
                     <div id="cost-info"></div>
@@ -98,13 +87,12 @@
             </div>
         </div>
     </section>
-
-    <footer class="footer">
+    </main>
+    <footer class="footer" role="contentinfo">
         <div class="footer-text">
             <p>Copyright © 2024 xBewerbung | Powered By AI (OpenAI) | Alle Rechte vorbehalten.</p>
         </div>
     </footer>
-
     <script src="/Bewerbung_Generator/script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
@@ -119,3 +107,4 @@
     </script>
 </body>
 </html>
+<!-- xxxxx -->

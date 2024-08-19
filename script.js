@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
         textInputs.style.display = 'none';
         toggleFileBtn.classList.add('active');
         toggleTextBtn.classList.remove('active');
+        toggleFileBtn.setAttribute('aria-selected', 'true');
+        toggleTextBtn.setAttribute('aria-selected', 'false');
+        toggleFileBtn.focus();
     });
 
     toggleTextBtn.addEventListener('click', function() {
@@ -30,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
         textInputs.style.display = 'block';
         toggleFileBtn.classList.remove('active');
         toggleTextBtn.classList.add('active');
+        toggleTextBtn.setAttribute('aria-selected', 'true');
+        toggleFileBtn.setAttribute('aria-selected', 'false');
+        toggleTextBtn.focus();
     });
 
     // Set "Text eingeben" as default
