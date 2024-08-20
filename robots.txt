@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /private/
+Allow: /
+Sitemap: https://rassoulebrahimi.github.io/Bewerbung_Generator/sitemap.xml
