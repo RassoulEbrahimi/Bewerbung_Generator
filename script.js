@@ -1,3 +1,13 @@
+// Immediately invoked function to set initial theme
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark-mode');
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
@@ -23,25 +33,52 @@ document.addEventListener('DOMContentLoaded', function() {
         if (theme === 'dark') {
             document.body.classList.add('dark-mode');
             themeToggleBtn.textContent = '☀️';
-            localStorage.setItem('theme', 'dark');
         } else {
             document.body.classList.remove('dark-mode');
             themeToggleBtn.textContent = '🌙';
-            localStorage.setItem('theme', 'light');
+        }
+        localStorage.setItem('theme', theme);
+    }
+
+    // Function to get current theme
+    function getCurrentTheme() {
+        return document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+    }
+
+    // Function to check system preference
+    function getSystemPreference() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    // Function to apply the correct theme
+    function applyTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            setTheme(getSystemPreference());
         }
     }
 
-    // Check for saved theme preference or default to light
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    setTheme(savedTheme);
+    // Apply theme on load
+    applyTheme();
 
     // Toggle theme
     themeToggleBtn.addEventListener('click', function() {
-        const currentTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
-        setTheme(currentTheme);
+        const newTheme = getCurrentTheme() === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
     });
 
-    // Toggle between file and text inputs
+    // Listen for system preference changes
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addListener(function(e) {
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
+    }
+
+    // Rest of your existing code...
     toggleFileBtn.addEventListener('click', function() {
         fileInputs.style.display = 'block';
         textInputs.style.display = 'none';
@@ -131,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
                 throw new Error('Netzwerkfehler. Dies könnte ein CORS-Problem sein. Bitte überprüfen Sie die Serverkonfiguration.');
             }
-            // Rethrow the error to be handled by the calling function
             throw error;
         }
     }
@@ -182,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Download button event listeners (placeholders for now)
+    // Download button event listeners
     downloadPdfBtn.addEventListener('click', function(e) {
         e.preventDefault();
         alert('PDF-Download-Funktion wird implementiert.');

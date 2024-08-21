@@ -11,8 +11,16 @@
     outline: none;
     scroll-behavior: smooth;
     font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
-
+:root {
+    --bg-color: #f0f0f0;
+    --text-color: #333333;
+    --light-blue: #4e92ff;
+    --second-bg-color: #e0e0e0;
+    --main-color: #0056b3;
+    --accent-color: #00a86b;
+}
 /* Root variables for color scheme */
 :root {
     --bg-color: #f0f0f0;
@@ -33,6 +41,7 @@ body.dark-mode {
     --second-bg-color: #0d2a3f;
     --main-color: #bb86fc;
     --light-blue: #8499ff;
+    background-image: linear-gradient(to bottom right, #121212, #1a1a1a);
 }
 
 body.dark-mode header,
@@ -165,7 +174,7 @@ body.dark-mode #dark-mode-toggle {
 /* Project Showcase */
 .project-showcase {
     display: flex;
-    justify-content: center;
+    justify-content: normal;
     align-items: center;
     flex-direction: column;
     min-height: 100vh;
