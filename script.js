@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
     const uploadForm = document.getElementById('upload-form');
     const fileInputs = document.getElementById('file-inputs');
     const textInputs = document.getElementById('text-inputs');
@@ -17,15 +18,35 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyTextBtn = document.getElementById('copy-text');
     const loadingIndicator = document.getElementById('loading-indicator');
 
+    // Function to set the theme
+    function setTheme(theme) {
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggleBtn.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.body.classList.remove('dark-mode');
+            themeToggleBtn.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+    }
+
+    // Check for saved theme preference or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    // Toggle theme
+    themeToggleBtn.addEventListener('click', function() {
+        const currentTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+        setTheme(currentTheme);
+    });
+
     // Toggle between file and text inputs
     toggleFileBtn.addEventListener('click', function() {
         fileInputs.style.display = 'block';
         textInputs.style.display = 'none';
         toggleFileBtn.classList.add('active');
         toggleTextBtn.classList.remove('active');
-        toggleFileBtn.setAttribute('aria-selected', 'true');
-        toggleTextBtn.setAttribute('aria-selected', 'false');
-        toggleFileBtn.focus();
     });
 
     toggleTextBtn.addEventListener('click', function() {
@@ -33,9 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
         textInputs.style.display = 'block';
         toggleFileBtn.classList.remove('active');
         toggleTextBtn.classList.add('active');
-        toggleTextBtn.setAttribute('aria-selected', 'true');
-        toggleFileBtn.setAttribute('aria-selected', 'false');
-        toggleTextBtn.focus();
     });
 
     // Set "Text eingeben" as default
@@ -50,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayFileName(input) {
         const fileName = input.files[0].name;
         const fileNameDisplay = input.nextElementSibling || document.createElement('span');
-        fileNameDisplay.textContent = `ausgewählte Datei: ${fileName}`;
+        fileNameDisplay.textContent = `Selected file: ${fileName}`;
         fileNameDisplay.className = 'file-name-display';
         if (!input.nextElementSibling) {
             input.parentNode.insertBefore(fileNameDisplay, input.nextSibling);
@@ -84,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 seconds timeout
 
-            const response = await fetch('https://xbewerbung.onrender.com/generate_bewerbung', {
+            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -126,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let isFileUpload = fileInputs.style.display !== 'none';
 
         if (isFileUpload) {
-            // File upload logic
             const lebenslaufFile = document.getElementById('lebenslauf').files[0];
             const jobbeschreibungFile = document.getElementById('jobbeschreibung').files[0];
 
@@ -138,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
             lebenslauf = await lebenslaufFile.text();
             stellenanzeige = await jobbeschreibungFile.text();
         } else {
-            // Text input logic
             lebenslauf = document.getElementById('lebenslauf-text').value;
             stellenanzeige = document.getElementById('jobbeschreibung-text').value;
 
@@ -148,34 +164,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Show loading indicator
         loadingIndicator.style.display = 'block';
         resultSection.style.display = 'none';
 
         try {
             const data = await generateBewerbung(lebenslauf, stellenanzeige);
-            
-            // Handle the response
             generatedContent.innerHTML = `<pre>${data.bewerbung}</pre>`;
             costInfo.textContent = `Geschätzte Kosten: ${data.estimated_cost}`;
-            
-            // Enable download buttons
-            downloadPdfBtn.style.display = 'inline-block';
-            downloadDocxBtn.style.display = 'inline-block';
-
-            // Show result buttons
             resultButtons.forEach(btn => btn.style.display = 'block');
-
-            // Show result section and hide loading indicator
             resultSection.style.display = 'block';
             loadingIndicator.style.display = 'none';
-
-            // Scroll to the result section
             resultSection.scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
             console.error('Fehler beim Generieren der Bewerbung:', error.message);
-            // Display error message to the user
             alert(`Ein Fehler ist aufgetreten: ${error.message}`);
+            loadingIndicator.style.display = 'none';
         }
     });
 
@@ -190,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('DOCX-Download-Funktion wird implementiert.');
     });
 
-    // Copy to clipboard functionality
     copyTextBtn.addEventListener('click', function() {
         const textToCopy = generatedContent.textContent;
         navigator.clipboard.writeText(textToCopy).then(function() {
@@ -200,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Download as text file functionality
     downloadTextBtn.addEventListener('click', function() {
         const text = generatedContent.textContent;
         const blob = new Blob([text], { type: 'text/plain' });

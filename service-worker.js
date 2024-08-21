@@ -1,14 +1,14 @@
 const CACHE_NAME = 'xBewerbung-cache-v1';
 const urlsToCache = [
-  '/Bewerbung_Generator/',
-  '/Bewerbung_Generator/index.html',
-  '/Bewerbung_Generator/style.css',
-  '/Bewerbung_Generator/script.js',
-  '/Bewerbung_Generator/manifest.json',
-  '/Bewerbung_Generator/icons/icon-192x192.png',
-  '/Bewerbung_Generator/icons/icon-512x512.png',
-  '/Bewerbung_Generator/bewerbung.webp',
-  '/Bewerbung_Generator/xBew.mp4'
+  '/',
+  '/index.html',
+  '/style.css',
+  '/script.js',
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
+  '/bewerbung.webp',
+  '/xBew.mp4'
 ];
 
 self.addEventListener('install', event => {

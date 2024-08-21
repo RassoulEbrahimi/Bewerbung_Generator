@@ -5,110 +5,142 @@
     <meta name="description" content="xBewerbung - KI-gestützter Generator für angepasste Bewerbungen. Erstellen Sie professionelle Bewerbungsunterlagen in Sekunden.">
     <meta name="keywords" content="Bewerbung, Bewerbungsschreiben, Lebenslauf, Job, KI, Bewerbungsgenerator, Anschreiben, Stellenanzeige, Berlin">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#00abf0">
     <title>xBewerbung</title>
-    <link rel="manifest" href="/Bewerbung_Generator/manifest.json">
-    <link rel="stylesheet" href="/Bewerbung_Generator/style.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="xBewerbung - Professionelle Bewerbungsunterlagen mit KI">
-    <meta property="og:description" content="Erstellen Sie mit unserem KI-gestützten Generator professionelle Bewerbungsunterlagen in wenigen Sekunden.">
-    <meta property="og:image" content="https://rassoulebrahimi.github.io/Bewerbung_Generator/icons/icon-512x512.png">
-    <meta property="og:url" content="https://rassoulebrahimi.github.io/Bewerbung_Generator/">
-    <meta property="og:type" content="website">
-
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="xBewerbung - Professionelle Bewerbungsunterlagen mit KI">
-    <meta name="twitter:description" content="Erstellen Sie mit unserem KI-gestützten Generator professionelle Bewerbungsunterlagen in wenigen Sekunden.">
-    <meta name="twitter:image" content="https://rassoulebrahimi.github.io/Bewerbung_Generator/icons/icon-512x512.png">    
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">  
 </head>
 <body>
-    <!-- Video background for mobile views -->
-    <video class="video-background" autoplay muted loop aria-hidden="true">
-        <source src="xBew.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <div class="video-container">
+        <!-- Fallback image for mobile or when video doesn't load -->
+        <img src="fallback-image.jpg" alt="AI-powered application generator background" class="fallback-image">
+    
+        <video class="video-background" playsinline autoplay muted loop poster="video-poster.jpg">
+            <source data-src="xBew.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
+    <!-- <button id="dark-mode-toggle" aria-label="Toggle Dark Mode">🌙</button> -->
     <header class="header" role="banner">
-        <a href="#" class="logo" aria-label="Zur Startseite" title="Zur Startseite">RSL.</a>
+        <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
     </header>
+    <!-- <nav class="navbar">
+        <span class="active-nav"></span>
+        <span class="animate" style="--i:2;"></span>
+    </nav> -->
 
-    <main class="main-content" id="home" role="main">
+    <!-- Theme Toggle Button -->
+    <!-- <div class="theme-toggle">
+        <button id="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
+            🌙
+        </button>
+    </div> -->
+
+    <main id="home" class="main-content" role="main">
         <section class="project-showcase">
-        <div class="project-content">
-            <div class="project-img">
-                <img src="bewerbung.webp" srcset="bewerbung.webp 320w, bewerbung.webp 640w, bewerbung.webp 1280w" sizes="(max-width: 320px) 280px, (max-width: 640px) 600px, 1200px" alt="xBewerbung-Banner" aria-label="xBewerbung-Banner">
-            </div>
-            <div class="project-description">
-                <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
-                <p>Erstellen Sie Ihre individuelle Bewerbung mit KI</p>
+            <div class="project-content">
+                <div class="project-img">
+                    <img src="bewerbung.webp" srcset="bewerbung.webp 320w, bewerbung.webp 640w, bewerbung.webp 1280w"
+                         sizes="(max-width: 320px) 280px, (max-width: 640px) 600px, 1200px"
+                         alt="xBewerbung-Banner" aria-label="xBewerbung-Banner">
+                </div>
+                <div class="project-description">
+                    <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
+                    <p>Erstellen Sie Ihre individuelle Bewerbung mit KI</p>
+
                     <div class="input-toggle" role="tablist">
                         <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen" role="tab" aria-selected="true">Datei hochladen</button>
                         <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben" role="tab" aria-selected="false">Text eingeben</button>
-                </div>
+                    </div>
+
                     <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data" aria-labelledby="form-title">
                         <div id="file-inputs" aria-live="polite">
-                        <div class="file-input-container">
-                            <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
-                            <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt" aria-label="Lebenslauf hochladen" title="Lebenslauf hochladen">
+                            <div class="file-input-container">
+                                <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
+                                <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt" aria-label="Lebenslauf hochladen" title="Lebenslauf hochladen">
+                            </div>
+                            <div class="file-input-container">
+                                <label for="jobbeschreibung">Jobbeschreibung (PDF, DOCX oder TXT):</label>
+                                <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt" aria-label="Jobbeschreibung hochladen" title="Jobbeschreibung hochladen">
+                            </div>
                         </div>
-                        <div class="file-input-container">
-                            <label for="jobbeschreibung">Jobbeschreibung (PDF, DOCX oder TXT):</label>
-                            <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt" aria-label="Jobbeschreibung hochladen" title="Jobbeschreibung hochladen">
-                        </div>
-                    </div>
                         <div id="text-inputs" style="display: none;" aria-live="polite">
-                        <div class="text-input-container">
-                            <label for="lebenslauf-text">Lebenslauf (Text):</label>
-                            <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein" aria-label="Lebenslauf eingeben" title="Lebenslauf eingeben"></textarea>
+                            <div class="text-input-container">
+                                <label for="lebenslauf-text">Lebenslauf (Text):</label>
+                                <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein" aria-label="Lebenslauf eingeben" title="Lebenslauf eingeben"></textarea>
+                            </div>
+                            <div class="text-input-container">
+                                <label for="jobbeschreibung-text">Jobbeschreibung (Text):</label>
+                                <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein" aria-label="Jobbeschreibung eingeben" title="Jobbeschreibung eingeben"></textarea>
+                            </div>
                         </div>
-                        <div class="text-input-container">
-                            <label for="jobbeschreibung-text">Jobbeschreibung (Text):</label>
-                            <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein" aria-label="Jobbeschreibung eingeben" title="Jobbeschreibung eingeben"></textarea>
+                        <div class="btn-box">
+                            <button type="submit" class="btn" aria-label="Bewerbung generieren" title="Bewerbung generieren">Bewerbung generieren</button>
                         </div>
-                    </div>
-                    <div class="btn-box">
-                        <button type="submit" class="btn" aria-label="Bewerbung generieren" title="Bewerbung generieren">Bewerbung generieren</button>
-                    </div>
-                </form>
+                    </form>
+
                     <div id="loading-indicator" style="display: none;" aria-live="assertive">
-                    <div class="spinner" aria-label="Laden..." title="Laden..."></div>
-                    <p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>
-                </div>
+                        <div class="spinner" aria-label="Laden..." title="Laden..."></div>
+                        <p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>
+                    </div>
+
                     <div id="result-section" style="display: none;" aria-live="polite">
-                    <h3>Ihre generierte Bewerbung</h3>
-                    <div id="generated-content"></div>
-                    <div id="cost-info"></div>
-                    <div class="result-buttons">
-                        <button class="result-btn" id="copy-text" aria-label="In die Zwischenablage kopieren" title="In die Zwischenablage kopieren">In die Zwischenablage kopieren</button>
-                        <button class="result-btn" id="download-text" aria-label="Als TXT herunterladen" title="Als TXT herunterladen">Als TXT herunterladen</button>
-                        <button class="result-btn" id="download-pdf" aria-label="Als PDF herunterladen" title="Als PDF herunterladen">Als PDF herunterladen</button>
-                        <button class="result-btn" id="download-docx" aria-label="Als DOCX herunterladen" title="Als DOCX herunterladen">Als DOCX herunterladen</button>
+                        <h3>Ihre generierte Bewerbung</h3>
+                        <div id="generated-content"></div>
+                        <div id="cost-info"></div>
+                        <div class="result-buttons">
+                            <button class="result-btn" id="copy-text" aria-label="In die Zwischenablage kopieren" title="In die Zwischenablage kopieren">In die Zwischenablage kopieren</button>
+                            <button class="result-btn" id="download-text" aria-label="Als TXT herunterladen" title="Als TXT herunterladen">Als TXT herunterladen</button>
+                            <button class="result-btn" id="download-pdf" aria-label="Als PDF herunterladen" title="Als PDF herunterladen">Als PDF herunterladen</button>
+                            <button class="result-btn" id="download-docx" aria-label="Als DOCX herunterladen" title="Als DOCX herunterladen">Als DOCX herunterladen</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
     </main>
     <footer class="footer" role="contentinfo">
         <div class="footer-text">
             <p>Copyright © 2024 xBewerbung | Powered By AI (OpenAI) | Alle Rechte vorbehalten.</p>
         </div>
     </footer>
-    <script src="/Bewerbung_Generator/script.js"></script>
+    <script src="script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/Bewerbung_Generator/service-worker.js').then(function(registration) {
+                navigator.serviceWorker.register('service-worker.js').then(function(registration) {
                     console.log('Service Worker registered with scope:', registration.scope);
                 }, function(error) {
                     console.log('Service Worker registration failed:', error);
                 });
             });
         }
+
+        // Lazy load video
+        document.addEventListener('DOMContentLoaded', function() {
+            var video = document.querySelector('.video-background');
+            var source = video.querySelector('source');
+            
+            if (source && source.dataset.src) {
+                var observer = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            source.src = source.dataset.src;
+                            video.load();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+                
+                observer.observe(video);
+            } else {
+                console.warn('Video source or data-src attribute is missing');
+            }
+        });
     </script>
 </body>
 </html>
-<!-- xxxxx -->

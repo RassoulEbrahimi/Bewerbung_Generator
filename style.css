@@ -15,14 +15,69 @@
 
 /* Root variables for color scheme */
 :root {
-    --bg-color: #081b29;
-    --second-bg-color: #112e42;
+    --bg-color: #f0f0f0;
     --text-color: #081b29;
     --light-blue: #4e92ff70;
+    --second-bg-color: #112e42;
 }
 
 body {
-    color: var(--text-color)
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    --bg-color: #081b29;
+    --text-color: #79ceff;
+    --second-bg-color: #0d2a3f;
+    --main-color: #bb86fc;
+    --light-blue: #8499ff;
+}
+
+body.dark-mode header,
+body.dark-mode section,
+body.dark-mode footer {
+    background-color: transparent;
+}
+
+/* Ensure the header is above the video */
+.header {
+    position: relative;
+    z-index: 2;
+}
+
+body.dark-mode h2,
+body.dark-mode p,
+body.dark-mode a {
+    color: #b8ebff;
+}
+
+body.dark-mode .project-description h2 {
+    color: #b8ebff;
+}
+
+/* Additional dark mode styles for other elements */
+#theme-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 2.5rem;
+    cursor: pointer;
+    color: #b8ebff;
+    position: absolute;
+    top: 3rem;
+    right: 3rem;
+    z-index: 1000;
+    transition: transform 0.5s ease;
+}
+
+#theme-toggle-btn:hover {
+    /* transform: ; */
+    transform: translateY(8px) translateX(-8px) scale(1.3);
+}
+
+body.dark-mode .input-toggle .btn {
+    color: #b8ebff;
 }
 
 /* Base HTML and body styles */
@@ -37,16 +92,73 @@ html {
     color: white
 }
 
-/* Video Background */
-.video-background {
-    display: block;
+.video-container {
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh; /* Adjust as needed */
+    overflow: hidden;
+    z-index: -1; /* This ensures the video stays behind other content */
+}
+
+.fallback-image {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -2;
+}
+
+/* Video Background */
+.video-background {
+    /* display: block; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    /* z-index: -2; */
+    filter: none;
+    transform: translateX(-50%) translateY(-50%);
+    transition: filter 0.5s;
+}
+
+body.dark-mode .video-background {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Hide fallback image when video is supported and loaded */
+.video-background:not([poster]) + .fallback-image {
+    display: none;
+}
+
+#dark-mode-toggle {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #b8ebff;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    z-index: 1000;
+}
+
+body.dark-mode #dark-mode-toggle {
+    color: #ffffff;
+}
+
+/* Ensure the main content is positioned above the video */
+.main-content {
+    position: relative;
+    z-index: 1;
+    /* Add some padding or margin to push content down if needed */
+    padding-top: 50px; /* Adjust as necessary */
 }
 
 
@@ -76,7 +188,7 @@ html {
     margin-bottom: 4rem
 }
 
-/* Project Content */
+/* Adjust the project content to ensure it's visible */
 .project-content {
     display: flex;
     justify-content: center;
@@ -106,7 +218,7 @@ html {
 }
 
 .project-img:hover img {
-    transform: scale(1.4)
+    transform: scale(1.2)
 }
 
 /* Project Description */
@@ -114,10 +226,9 @@ html {
     flex: 1 1 40rem
 }
 
-
 .project-description h2 {
     font-size: 3.2rem;
-    font-family: 'Poppins', sans-serif; /* Ensure font consistency */
+    font-family: 'Poppins', sans-serif;
     font-weight: 310;
     line-height: 1.3;
     text-align: center;
@@ -130,7 +241,6 @@ html {
     text-align: center;
     color: var(--text-color)
 }
-
 
 /* Input Toggle */
 .input-toggle {
@@ -146,11 +256,10 @@ html {
     border-radius: 0.8rem;
     border: 1px solid white;
     cursor: pointer;
-    transition: border .3s, box-shadow .3s, font-weight .2s;
+    transition: all .3s;
 }
 
-.input-toggle .btn.active,
-.result-btn {
+.input-toggle .btn.active {
     background: var(--light-blue);
     color: #081b29;
     border: 1.5px solid #081b29;
@@ -171,7 +280,7 @@ html {
 
 /* File Input Button Styles */
 .file-input-container input[type="file"] {
-    font-family: 'Poppins', sans-serif; /* Ensure font consistency */
+    font-family: 'Poppins', sans-serif;
     backdrop-filter: blur(55px);
     color: var(--text-color);
     width: 100%;
@@ -181,19 +290,20 @@ html {
     border-radius: .8rem;
     padding: 1rem;
     cursor: pointer;
-    transition: border-color .3s, box-shadow .3s
+    transition: all 0.3s;
 }
 
 .file-input-container input[type=file]:focus,
 .file-input-container input[type=file]:hover {
     border-color: var(--text-color);
-    box-shadow: 0 0 55px rgba(42, 42, 42, .412)
+    box-shadow: 0 0 55px rgba(42, 42, 42, .412);
+    transform: translateY(-3px);
 }
 
 /* Style the button inside the file input */
 .file-input-container input[type="file"]::file-selector-button {
     font-size: 1.4rem;
-    font-family: 'Poppins', sans-serif; /* Ensure font consistency */
+    font-family: 'Poppins', sans-serif;
     background-color: var(--light-blue);
     border: 1px solid #fff;
     border-radius: 0.4rem;
@@ -203,19 +313,17 @@ html {
     transition: 0.3s;
 }
 
-/* Change button appearance on hover */
 .file-input-container input[type="file"]::file-selector-button:hover {
     background-color: rgba(38, 161, 255, 0.202);
     box-shadow: 0 0 55px rgba(0, 0, 0, .412);
-    border: 1px solid black
+    border: 1px solid black;
 }
 
-/* Additional styling for the file name display */
 .file-name-display {
-    font-size: 1.4rem; /* Set font size for file name */
-    color: var(--text-color); /* Set text color for file name */
-    margin-top: 0.5rem; /* Margin above the file name */
-    display: block; /* Ensure file name is displayed on a new line */
+    font-size: 1.4rem;
+    color: var(--text-color);
+    margin-top: 0.5rem;
+    display: block;
 }
 
 /* Text Input Container */
@@ -234,10 +342,10 @@ html {
     border-radius: .8rem;
     resize: vertical;
     box-shadow: 0 0 55px rgba(0, 0, 0, .412);
-    transition: border .3s, background .3s;
+    transition: all .3s;
 }
 
-.text-input-container textarea:focus { 
+.text-input-container textarea:focus {
     background: rgba(38, 161, 255, 0.202);
     border: 1.5px solid #000000;
 }
@@ -268,13 +376,12 @@ html {
     transition: .5s;
 }
 
-
 .btn-box .btn:hover,
 .btn-box .btn:focus,
 .input-toggle .btn:hover,
 .input-toggle .btn:focus {
     border: 1.5px solid #081b29;
-    box-shadow: 0 0 55px rgba(42, 42, 42, .412)    
+    box-shadow: 0 0 55px rgba(42, 42, 42, .412);
 }
 
 .btn-box .btn::before {
@@ -307,7 +414,6 @@ html {
     margin-bottom: 3.5rem;
 }
 
-
 #generated-content {
     width: 100%;
     max-width: 950px;
@@ -318,7 +424,6 @@ html {
     border-radius: .8rem;
     overflow-x: auto
 }
-
 
 #generated-content pre {
     font-family: inherit;
@@ -364,19 +469,24 @@ html {
 }
 
 .result-btn {
+    background: var(--light-blue);
+    color: #081b29;
+    font-weight: 500;
     padding: 1rem;
     font-size: 1.4rem;
-    border: none;
-    border-radius: 0.5rem;
+    border: 1.5px solid white;
+    border-radius: .8rem;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: .5s;
 }
 
-.result-btn:hover {
+.result-btn:hover,
+.result-btn:focus {
+    border: 1.5px solid #081b29;
     background-color: var(--second-bg-color);
     color: var(--light-blue);
+    box-shadow: 0 0 55px rgba(42, 42, 42, .412);
 }
-
 
 #upload-form {
     width: 100%;
@@ -398,8 +508,7 @@ html {
     background: rgba(255, 255, 255, 0.376)
 }
 
-#generated-content,
-.result-btn:hover {
+#generated-content {
     background-color: var(--second-bg-color)
 }
 
@@ -416,9 +525,12 @@ html {
     word-wrap: break-word
 }
 
-
 .footer {
-    padding: 1rem 9%;
+    /* padding: 1rem 9%; */
+    position: relative;
+    z-index: 2;
+    color: white;
+    padding: 10px 0;
 }
 
 .footer .footer-text {
@@ -430,6 +542,107 @@ html {
     justify-content: center;
 }
 
+/* ... (existing styles remain unchanged) ... */
+
+/* Error Message Styling */
+.error-message {
+    background-color: rgba(255, 0, 0, 0.1);
+    border: 1px solid #ff0000;
+    color: #ff0000;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+/* Improve contrast for dark mode */
+body.dark-mode .error-message {
+    background-color: rgba(255, 0, 0, 0.2);
+    color: #ff6b6b;
+}
+
+/* Enhance loading indicator visibility */
+#loading-indicator {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}
+
+/* Improve button styles */
+.btn-box .btn,
+.input-toggle .btn,
+.result-btn {
+    transition: all 0.3s ease;
+}
+
+.btn-box .btn:hover,
+.btn-box .btn:focus,
+.input-toggle .btn:hover,
+.input-toggle .btn:focus,
+.result-btn:hover,
+.result-btn:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-box .btn:active,
+.input-toggle .btn:active,
+.result-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Enhance accessibility */
+.btn-box .btn:focus,
+.input-toggle .btn:focus,
+.result-btn:focus,
+textarea:focus,
+input[type="file"]:focus {
+    outline: 2px solid var(--light-blue);
+    outline-offset: 2px;
+}
+
+/* Improve text input contrast in dark mode */
+body.dark-mode .text-input-container textarea {
+    background: rgba(255, 255, 255, 0.1);
+    color: #b8ebff;
+}
+
+/* Enhance result section readability */
+#generated-content {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode #generated-content {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .project-content {
+    color: #b8ebff
+}
+
+body.dark-mode .input-toggle .btn {
+    /* color: #00abf0; */
+    background-color: #ffeeee32;
+}
+
+body.dark-mode .input-toggle .btn.active {
+    background-color: #73c5ffa3;
+}
+
+body.dark-mode .input-toggle .btn:hover {
+    border-color: white;
+}
+
+/* ... (rest of the existing styles remain unchanged) ... */
 
 /* Responsive Design */
 @media (max-width: 1200px) {
