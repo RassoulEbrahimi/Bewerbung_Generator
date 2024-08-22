@@ -139,8 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 seconds timeout
 
-            const response = await fetch('https://bewerbung-generator.onrender.com/generate_bewerbung', {
-                method: 'POST',
+            const response = await fetch('https://xbewerbung.onrender.com/generate_bewerbung', {                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -205,6 +204,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const data = await generateBewerbung(lebenslauf, stellenanzeige);
+            if (data.error) {
+                throw new Error(data.error);
+            }
             generatedContent.innerHTML = `<pre>${data.bewerbung}</pre>`;
             costInfo.textContent = `Geschätzte Kosten: ${data.estimated_cost}`;
             resultButtons.forEach(btn => btn.style.display = 'block');

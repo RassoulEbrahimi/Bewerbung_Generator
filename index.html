@@ -28,17 +28,6 @@
     <header class="header" role="banner">
         <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
     </header>
-    <!-- <nav class="navbar">
-        <span class="active-nav"></span>
-        <span class="animate" style="--i:2;"></span>
-    </nav> -->
-
-    <!-- Theme Toggle Button -->
-    <!-- <div class="theme-toggle">
-        <button id="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
-            🌙
-        </button>
-    </div> -->
 
     <main id="home" class="main-content" role="main">
         <section class="project-showcase">
@@ -113,10 +102,10 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('service-worker.js').then(function(registration) {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                }, function(error) {
-                    console.log('Service Worker registration failed:', error);
+                navigator.serviceWorker.register('/Bewerbung_Generator/service-worker.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
                 });
             });
         }
