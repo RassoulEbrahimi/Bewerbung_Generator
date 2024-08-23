@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#00abf0">
     <title>xBewerbung</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/xBewerbung/style.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="apple-touch-icon" href="/icons/icon-192x192.png">  
@@ -97,11 +97,11 @@
             <p>Copyright © 2024 xBewerbung | Powered By AI (OpenAI) | Alle Rechte vorbehalten.</p>
         </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="/xBewerbung/script.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/Bewerbung_Generator/service-worker.js').then(function(registration) {
+                navigator.serviceWorker.register('/xBewerbung/service-worker.js').then(function(registration) {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, function(err) {
                     console.log('ServiceWorker registration failed: ', err);
