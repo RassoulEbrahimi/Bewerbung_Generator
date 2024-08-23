@@ -1,14 +1,14 @@
 const CACHE_NAME = 'xBewerbung-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
-  '/bewerbung.webp',
-  '/xBew.mp4'
+  '/xBewerbung/',
+  '/xBewerbung/index.html',
+  '/xBewerbung/style.css',
+  '/xBewerbung/script.js',
+  '/xBewerbung/manifest.json',
+  '/xBewerbung/icons/icon-192x192.png',
+  '/xBewerbung/icons/icon-512x512.png',
+  '/xBewerbung/bewerbung.webp',
+  '/xBewerbung/xBew.mp4'
 ];
 
 self.addEventListener('install', event => {
@@ -28,7 +28,7 @@ self.addEventListener('fetch', event => {
                 return response || fetch(event.request).catch(() => {
                     // If the resource is not in the cache and fails to fetch, return a fallback response
                     if (event.request.mode === 'navigate') {
-                        return caches.match('/index.html'); // Fallback to index.html for navigational requests
+                        return caches.match('/xBewerbung/index.html'); // Fallback to index.html for navigational requests
                     }
                 });
             })
