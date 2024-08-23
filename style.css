@@ -20,16 +20,15 @@
     --second-bg-color: #e0e0e0;
     --main-color: #0056b3;
     --accent-color: #00a86b;
-    --theme-color: #00abf0;
+    --theme-color: #3cc8ff71;
     --background-color: #ffffff;
 }
 /* Root variables for color scheme */
-:root {
-    --bg-color: #f0f0f0;
+/* :root {
     --text-color: #081b29;
     --light-blue: #4e92ff70;
     --second-bg-color: #112e42;
-}
+} */
 
 body {
     background-color: var(--background-color);

@@ -81,9 +81,28 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ... [rest of your existing code remains unchanged] ...
+    // Input Toggle Functionality
+    function showFileInputs() {
+        fileInputs.style.display = 'block';
+        textInputs.style.display = 'none';
+        toggleFileBtn.classList.add('active');
+        toggleTextBtn.classList.remove('active');
+    }
 
-    // Functions
+    function showTextInputs() {
+        fileInputs.style.display = 'none';
+        textInputs.style.display = 'block';
+        toggleFileBtn.classList.remove('active');
+        toggleTextBtn.classList.add('active');
+    }
+
+    toggleFileBtn.addEventListener('click', showFileInputs);
+    toggleTextBtn.addEventListener('click', showTextInputs);
+
+    // Set "Text eingeben" as default
+    showTextInputs();
+
+    // File Handling Functions
     function validateFileType(file, allowedTypes) {
         return allowedTypes.includes(file.type);
     }
@@ -108,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // API Interaction
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
             const controller = new AbortController();
@@ -146,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Form Submission Handler
     async function handleFormSubmit(e) {
         e.preventDefault();
         
@@ -194,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Result Handling Functions
     function handleCopyText() {
         const textToCopy = generatedContent.textContent;
         navigator.clipboard.writeText(textToCopy).then(function() {
@@ -215,4 +237,29 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
     }
+
+    // Additional Event Listeners
+    lebenslaufInput.addEventListener('change', function(e) {
+        handleFileInputChange(this, 'Lebenslauf');
+    });
+
+    jobbeschreibungInput.addEventListener('change', function(e) {
+        handleFileInputChange(this, 'Jobbeschreibung');
+    });
+
+    uploadForm.addEventListener('submit', handleFormSubmit);
+
+    downloadPdfBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('PDF-Download-Funktion wird implementiert.');
+    });
+
+    downloadDocxBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('DOCX-Download-Funktion wird implementiert.');
+    });
+
+    copyTextBtn.addEventListener('click', handleCopyText);
+
+    downloadTextBtn.addEventListener('click', handleDownloadText);
 });
