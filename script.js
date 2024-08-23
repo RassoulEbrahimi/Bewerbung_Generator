@@ -139,7 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 240000); // 240 seconds timeout
 
-            const response = await fetch('https://xbewerbung.onrender.com/generate_bewerbung', {                method: 'POST',
+            const response = await fetch('https://xbewerbung.onrender.com/generate_bewerbung', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
