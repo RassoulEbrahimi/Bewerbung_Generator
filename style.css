@@ -20,6 +20,8 @@
     --second-bg-color: #e0e0e0;
     --main-color: #0056b3;
     --accent-color: #00a86b;
+    --theme-color: #00abf0;
+    --background-color: #ffffff;
 }
 /* Root variables for color scheme */
 :root {
@@ -30,8 +32,8 @@
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: var(--background-color);
+    color: var(--theme-color);
     transition: background-color 0.3s, color 0.3s;
 }
 

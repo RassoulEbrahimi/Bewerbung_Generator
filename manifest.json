@@ -4,8 +4,7 @@
     "description": "KI-gestützter Generator für angepasste Bewerbungen.",
     "start_url": "/xBewerbung/index.html",
     "display": "standalone",
-    "background_color": "#081b29",
-    "theme_color": "#00abf0",
+    "background_color": "#094069",
     "icons": [
         {
             "src": "/xBewerbung/icons/icon-192x192.png",

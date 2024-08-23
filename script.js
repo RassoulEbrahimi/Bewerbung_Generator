@@ -1,3 +1,44 @@
+// Theme Management
+function updateThemeColor() {
+    const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const themeColorMeta = document.querySelector("#theme-color-meta");
+    
+    if (isDarkMode) {
+        themeColorMeta.setAttribute("content", "#081b29"); // Dark theme color
+    } else {
+        themeColorMeta.setAttribute("content", "#00abf0"); // Light theme color
+    }
+}
+
+function setTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggleBtn.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-mode');
+        themeToggleBtn.textContent = '🌙';
+    }
+    localStorage.setItem('theme', theme);
+    updateThemeColor();
+}
+
+function getCurrentTheme() {
+    return document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+}
+
+function getSystemPreference() {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function applyTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else {
+        setTheme(getSystemPreference());
+    }
+}
+
 // Immediately invoked function to set initial theme
 (function() {
     const savedTheme = localStorage.getItem('theme');
@@ -6,10 +47,12 @@
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.body.classList.add('dark-mode');
     }
+    updateThemeColor();
 })();
 
+// Main execution
 document.addEventListener('DOMContentLoaded', function() {
-    // Get DOM elements
+    // DOM Elements
     const themeToggleBtn = document.getElementById('theme-toggle-btn');
     const uploadForm = document.getElementById('upload-form');
     const fileInputs = document.getElementById('file-inputs');
@@ -28,48 +71,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyTextBtn = document.getElementById('copy-text');
     const loadingIndicator = document.getElementById('loading-indicator');
 
-    // Function to set the theme
-    function setTheme(theme) {
-        if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-            themeToggleBtn.textContent = '☀️';
-        } else {
-            document.body.classList.remove('dark-mode');
-            themeToggleBtn.textContent = '🌙';
-        }
-        localStorage.setItem('theme', theme);
-    }
-
-    // Function to get current theme
-    function getCurrentTheme() {
-        return document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-    }
-
-    // Function to check system preference
-    function getSystemPreference() {
-        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-
-    // Function to apply the correct theme
-    function applyTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme);
-        } else {
-            setTheme(getSystemPreference());
-        }
-    }
-
     // Apply theme on load
     applyTheme();
 
-    // Toggle theme
+    // Event Listeners
     themeToggleBtn.addEventListener('click', function() {
         const newTheme = getCurrentTheme() === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
     });
 
-    // Listen for system preference changes
     if (window.matchMedia) {
         window.matchMedia('(prefers-color-scheme: dark)').addListener(function(e) {
             if (!localStorage.getItem('theme')) {
@@ -78,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Rest of your existing code...
     toggleFileBtn.addEventListener('click', function() {
         fileInputs.style.display = 'block';
         textInputs.style.display = 'none';
@@ -93,15 +102,38 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleTextBtn.classList.add('active');
     });
 
+    lebenslaufInput.addEventListener('change', function(e) {
+        handleFileInputChange(this, 'Lebenslauf');
+    });
+
+    jobbeschreibungInput.addEventListener('change', function(e) {
+        handleFileInputChange(this, 'Jobbeschreibung');
+    });
+
+    uploadForm.addEventListener('submit', handleFormSubmit);
+
+    downloadPdfBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('PDF-Download-Funktion wird implementiert.');
+    });
+
+    downloadDocxBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('DOCX-Download-Funktion wird implementiert.');
+    });
+
+    copyTextBtn.addEventListener('click', handleCopyText);
+
+    downloadTextBtn.addEventListener('click', handleDownloadText);
+
     // Set "Text eingeben" as default
     toggleTextBtn.click();
 
-    // Function to validate file type
+    // Functions
     function validateFileType(file, allowedTypes) {
         return allowedTypes.includes(file.type);
     }
 
-    // Function to display file name
     function displayFileName(input) {
         const fileName = input.files[0].name;
         const fileNameDisplay = input.nextElementSibling || document.createElement('span');
@@ -112,28 +144,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Event listeners for file inputs
-    lebenslaufInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
+    function handleFileInputChange(input, fileType) {
+        const file = input.files[0];
         if (validateFileType(file, ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'])) {
-            displayFileName(this);
+            displayFileName(input);
         } else {
-            alert('Bitte wählen Sie eine PDF-, DOCX- oder TXT-Datei für Ihren Lebenslauf aus.');
-            this.value = ''; // Clear the input
+            alert(`Bitte wählen Sie eine PDF-, DOCX- oder TXT-Datei für Ihren ${fileType} aus.`);
+            input.value = ''; // Clear the input
         }
-    });
+    }
 
-    jobbeschreibungInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (validateFileType(file, ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'])) {
-            displayFileName(this);
-        } else {
-            alert('Bitte wählen Sie eine PDF-, DOCX- oder TXT-Datei für Ihre Jobbeschreibung aus.');
-            this.value = ''; // Clear the input
-        }
-    });
-
-    // Function to generate Bewerbung with improved error handling and timeout
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
             const controller = new AbortController();
@@ -172,8 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Form submission event listener
-    uploadForm.addEventListener('submit', async function(e) {
+    async function handleFormSubmit(e) {
         e.preventDefault();
         
         let lebenslauf, stellenanzeige;
@@ -219,29 +238,18 @@ document.addEventListener('DOMContentLoaded', function() {
             alert(`Ein Fehler ist aufgetreten: ${error.message}`);
             loadingIndicator.style.display = 'none';
         }
-    });
+    }
 
-    // Download button event listeners
-    downloadPdfBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('PDF-Download-Funktion wird implementiert.');
-    });
-
-    downloadDocxBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('DOCX-Download-Funktion wird implementiert.');
-    });
-
-    copyTextBtn.addEventListener('click', function() {
+    function handleCopyText() {
         const textToCopy = generatedContent.textContent;
         navigator.clipboard.writeText(textToCopy).then(function() {
             alert('Text wurde in die Zwischenablage kopiert!');
         }, function(err) {
             console.error('Fehler beim Kopieren des Textes: ', err);
         });
-    });
+    }
 
-    downloadTextBtn.addEventListener('click', function() {
+    function handleDownloadText() {
         const text = generatedContent.textContent;
         const blob = new Blob([text], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -252,5 +260,5 @@ document.addEventListener('DOMContentLoaded', function() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-    });
+    }
 });
