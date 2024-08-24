@@ -99,8 +99,9 @@
     </footer>
     <script src="script.js" defer></script>
     <script>
-        // Determine the base path
-        var basePath = window.location.pathname.includes('/xBewerbung/') ? '/xBewerbung/' : '/';
+        // Determine the base path and environment
+        var basePath = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/' : '/xBewerbung/';
+        var isGitHubPages = window.location.hostname.includes('github.io');
         
         // Function to update asset paths
         function updateAssetPaths() {
@@ -108,29 +109,18 @@
             assets.forEach(function(asset) {
                 var attr = asset.tagName === 'SOURCE' ? 'data-src' : (asset.tagName === 'LINK' ? 'href' : 'src');
                 if (asset[attr] && !asset[attr].startsWith('http') && !asset[attr].startsWith(basePath)) {
-                    asset[attr] = basePath + asset[attr];
+                    asset[attr] = basePath + asset[attr].replace(/^\/xBewerbung\//, '');
                 }
             });
 
-            // Update manifest.json
-            fetch('manifest.json')
-                .then(response => response.json())
-                .then(data => {
-                    data.start_url = basePath;
-                    data.icons.forEach(icon => {
-                        icon.src = basePath + icon.src.replace(/^\/xBewerbung\//, '');
-                    });
-                    return fetch('manifest.json', {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data, null, 2),
-                    });
-                })
-                .then(() => console.log('Manifest updated successfully'))
-                .catch(error => console.error('Error updating manifest:', error));
+            // Update manifest link
+            var manifestLink = document.querySelector('link[rel="manifest"]');
+            if (manifestLink) {
+                manifestLink.href = isGitHubPages ? 'manifest.github.json' : 'manifest.local.json';
+            }
         }
+
+
 
         // Call the function when the DOM is loaded
         document.addEventListener('DOMContentLoaded', updateAssetPaths);
