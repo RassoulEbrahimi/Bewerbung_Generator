@@ -104,7 +104,7 @@
         
         // Function to update asset paths
         function updateAssetPaths() {
-            var assets = document.querySelectorAll('img[src], video[poster], source[data-src], link[rel="manifest"], link[rel="icon"], link[rel="apple-touch-icon"]');
+            var assets = document.querySelectorAll('img[src], video[poster], source[data-src], link[rel="icon"], link[rel="apple-touch-icon"]');
             assets.forEach(function(asset) {
                 var attr = asset.tagName === 'SOURCE' ? 'data-src' : (asset.tagName === 'LINK' ? 'href' : 'src');
                 if (asset[attr] && !asset[attr].startsWith('http') && !asset[attr].startsWith(basePath)) {
@@ -113,16 +113,23 @@
             });
 
             // Update manifest.json
-            fetch(basePath + 'manifest.json')
+            fetch('manifest.json')
                 .then(response => response.json())
                 .then(data => {
+                    data.start_url = basePath;
                     data.icons.forEach(icon => {
                         icon.src = basePath + icon.src.replace(/^\/xBewerbung\//, '');
                     });
-                    var blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
-                    var manifestURL = URL.createObjectURL(blob);
-                    document.querySelector('link[rel="manifest"]').setAttribute('href', manifestURL);
-                });
+                    return fetch('manifest.json', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data, null, 2),
+                    });
+                })
+                .then(() => console.log('Manifest updated successfully'))
+                .catch(error => console.error('Error updating manifest:', error));
         }
 
         // Call the function when the DOM is loaded
