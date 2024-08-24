@@ -7,19 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#00abf0" id="theme-color-meta">
     <title>xBewerbung</title>
-    <link rel="manifest" href="/xBewerbung/manifest.json">
-    <link rel="stylesheet" href="/xBewerbung/style.css">
-    <link rel="icon" href="/xBewerbung/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="apple-touch-icon" href="/xBewerbung/icons/icon-192x192.png">  
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png"> 
 </head>
 <body>
     <div class="video-container">
         <!-- Fallback image for mobile or when video doesn't load -->
-        <img src="/xBewerbung/fallback-image.jpg" alt="AI-powered application generator background" class="fallback-image">
+        <img src="fallback-image.jpg" alt="AI-powered application generator background" class="fallback-image">
     
-        <video class="video-background" playsinline autoplay muted loop poster="/xBewerbung/video-poster.jpg">
-            <source data-src="/xBewerbung/xBew.mp4" type="video/mp4">
+        <video class="video-background" playsinline autoplay muted loop poster="video-poster.jpg">
+            <source data-src="xBew.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -33,7 +33,7 @@
         <section class="project-showcase">
             <div class="project-content">
                 <div class="project-img">
-                    <img src="/xBewerbung/bewerbung.webp" srcset="bewerbung.webp 320w, bewerbung.webp 640w, bewerbung.webp 1280w"
+                    <img src="bewerbung.webp" srcset="bewerbung.webp 320w, bewerbung.webp 640w, bewerbung.webp 1280w"
                          sizes="(max-width: 320px) 280px, (max-width: 640px) 600px, 1200px"
                          alt="xBewerbung-Banner" aria-label="xBewerbung-Banner">
                 </div>
@@ -97,11 +97,41 @@
             <p>Copyright © 2024 xBewerbung | Powered By AI (OpenAI) | Alle Rechte vorbehalten.</p>
         </div>
     </footer>
-    <script src="/xBewerbung/script.js"></script>
+    <script src="script.js" defer></script>
     <script>
+        // Determine the base path
+        var basePath = window.location.pathname.includes('/xBewerbung/') ? '/xBewerbung/' : '/';
+        
+        // Function to update asset paths
+        function updateAssetPaths() {
+            var assets = document.querySelectorAll('img[src], video[poster], source[data-src], link[rel="manifest"], link[rel="icon"], link[rel="apple-touch-icon"]');
+            assets.forEach(function(asset) {
+                var attr = asset.tagName === 'SOURCE' ? 'data-src' : (asset.tagName === 'LINK' ? 'href' : 'src');
+                if (asset[attr] && !asset[attr].startsWith('http') && !asset[attr].startsWith(basePath)) {
+                    asset[attr] = basePath + asset[attr];
+                }
+            });
+
+            // Update manifest.json
+            fetch(basePath + 'manifest.json')
+                .then(response => response.json())
+                .then(data => {
+                    data.icons.forEach(icon => {
+                        icon.src = basePath + icon.src.replace(/^\/xBewerbung\//, '');
+                    });
+                    var blob = new Blob([JSON.stringify(data)], {type: 'application/json'});
+                    var manifestURL = URL.createObjectURL(blob);
+                    document.querySelector('link[rel="manifest"]').setAttribute('href', manifestURL);
+                });
+        }
+
+        // Call the function when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', updateAssetPaths);
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/xBewerbung/service-worker.js').then(function(registration) {
+                const swUrl = basePath + 'service-worker.js';
+                navigator.serviceWorker.register(swUrl).then(function(registration) {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, function(err) {
                     console.log('ServiceWorker registration failed: ', err);
@@ -118,7 +148,7 @@
                 var observer = new IntersectionObserver(function(entries) {
                     entries.forEach(function(entry) {
                         if (entry.isIntersecting) {
-                            source.src = source.dataset.src;
+                            source.src = basePath + source.dataset.src.replace(/^\/xBewerbung\//, '');
                             video.load();
                             observer.unobserve(entry.target);
                         }

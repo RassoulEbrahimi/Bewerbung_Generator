@@ -1,14 +1,16 @@
 const CACHE_NAME = 'xBewerbung-cache-v1';
+const BASE_PATH = self.location.pathname.includes('/xBewerbung/') ? '/xBewerbung/' : '/';
+
 const urlsToCache = [
-  '/xBewerbung/',
-  '/xBewerbung/index.html',
-  '/xBewerbung/style.css',
-  '/xBewerbung/script.js',
-  '/xBewerbung/manifest.json',
-  '/xBewerbung/icons/icon-192x192.png',
-  '/xBewerbung/icons/icon-512x512.png',
-  '/xBewerbung/bewerbung.webp',
-  '/xBewerbung/xBew.mp4'
+  BASE_PATH,
+  BASE_PATH + 'index.html',
+  BASE_PATH + 'style.css',
+  BASE_PATH + 'script.js',
+  BASE_PATH + 'manifest.json',
+  BASE_PATH + 'icons/icon-192x192.png',
+  BASE_PATH + 'icons/icon-512x512.png',
+  BASE_PATH + 'bewerbung.webp',
+  BASE_PATH + 'xBew.mp4'
 ];
 
 self.addEventListener('install', event => {
