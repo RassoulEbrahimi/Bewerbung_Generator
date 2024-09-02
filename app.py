@@ -7,6 +7,7 @@ from functools import wraps
 import tiktoken
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
+from flask_cors import cross_origin
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -27,7 +28,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')  # This will use the SECRET_KEY from your .env file
 db = SQLAlchemy(app)
 
-CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], "supports_credentials": True}})
+CORS(app, origins=["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], supports_credentials=True)
+# CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], "supports_credentials": True}})
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -255,6 +257,7 @@ def login_required(f):
 #     return response
 
 @app.route('/register', methods=['POST', 'OPTIONS'])
+@cross_origin(origins=["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], supports_credentials=True)
 def register():
     if request.method == 'OPTIONS':
         return '', 204
