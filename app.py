@@ -26,6 +26,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
+CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
+
 # # Configure CORS
 # CORS(app, resources={r"/*": {
 #     "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", 
@@ -286,7 +288,10 @@ def add_cors_headers(response):
 def register():
     if request.method == 'OPTIONS':
         response = make_response()
-        add_cors_headers(response)
+        response.headers.add('Access-Control-Allow-Origin', 'https://rassoulebrahimi.github.io')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
     
     logging.info(f"Received {request.method} request for /register")

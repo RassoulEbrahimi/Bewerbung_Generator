@@ -177,7 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     async function register(email, password, name) {
         try {
-            console.log('Attempting registration...');
             const response = await fetch('https://xbewerbung.onrender.com/register', {
                 method: 'POST',
                 headers: {
@@ -188,20 +187,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 credentials: 'include'
             });
     
-            console.log('Response status:', response.status);
-            console.log('Response headers:', [...response.headers.entries()]);
-    
             if (!response.ok) {
                 const data = await response.json();
-                console.error('Registration failed:', data.error);
                 throw new Error(data.error || 'Registration failed');
             }
     
-            const result = await response.json();
-            console.log('Registration successful:', result);
-            return result;
+            return response.json();
         } catch (error) {
-            console.error('Error during registration:', error.message);
+            console.error('Registration error:', error);
             throw error;
         }
     }
