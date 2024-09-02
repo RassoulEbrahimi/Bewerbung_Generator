@@ -7,7 +7,6 @@ from functools import wraps
 import tiktoken
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
-from flask_cors import cross_origin
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -25,11 +24,16 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.getenv('SECRET_KEY')  # This will use the SECRET_KEY from your .env file
-db = SQLAlchemy(app)
+app.secret_key = os.getenv('SECRET_KEY')
 
-CORS(app, origins=["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], supports_credentials=True)
-# CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], "supports_credentials": True}})
+# Configure CORS
+CORS(app, resources={r"/*": {
+    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", 
+                "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"],
+    "supports_credentials": True
+}})
+
+db = SQLAlchemy(app)
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
@@ -257,10 +261,13 @@ def login_required(f):
 #     return response
 
 @app.route('/register', methods=['POST', 'OPTIONS'])
-@cross_origin(origins=["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"], supports_credentials=True)
 def register():
     if request.method == 'OPTIONS':
         return '', 204
+    
+    logging.info(f"Received {request.method} request for /register")
+    logging.info(f"Request headers: {request.headers}")
+    
     data = request.json
     if User.query.filter_by(email=data['email']).first():
         return jsonify({"error": "Email already registered"}), 400
@@ -272,8 +279,11 @@ def register():
     
     return jsonify({"message": "User registered successfully"}), 201
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
     data = request.json
     user = User.query.filter_by(email=data['email']).first()
     if user and user.check_password(data['password']):
@@ -283,15 +293,21 @@ def login():
         return jsonify({"message": "Logged in successfully"}), 200
     return jsonify({"error": "Invalid email or password"}), 401
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['POST', 'OPTIONS'])
 def logout():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
     session.pop('user_id', None)
     return jsonify({"message": "Logged out successfully"}), 200
 
-@app.route('/generate_bewerbung', methods=['POST'])
+@app.route('/generate_bewerbung', methods=['POST', 'OPTIONS'])
 @rate_limit(max_per_minute=10)
 @login_required
 def api_generate_bewerbung():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
     try:
         logger.info("Received request for generate_bewerbung")
         start_time = time.time()
