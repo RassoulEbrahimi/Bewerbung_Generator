@@ -26,7 +26,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
-CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
+# Configure CORS
+CORS(app, resources={r"/*": {
+    "origins": "https://rassoulebrahimi.github.io",
+    "supports_credentials": True
+}})
+
+# CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
 
 # # Configure CORS
 # CORS(app, resources={r"/*": {
@@ -36,14 +42,14 @@ CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "su
 # }})
 
 # Add this function to log headers
-def log_headers(response):
-    logger.info("Response Headers:")
-    for header, value in response.headers.items():
-        logger.info(f"{header}: {value}")
-    return response
+# def log_headers(response):
+#     logger.info("Response Headers:")
+#     for header, value in response.headers.items():
+#         logger.info(f"{header}: {value}")
+#     return response
 
-# Apply the header logging to all responses
-app.after_request(log_headers)
+# # Apply the header logging to all responses
+# app.after_request(log_headers)
 
 
 db = SQLAlchemy(app)
@@ -282,35 +288,31 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Credentials'] = 'true'
     return response
 
-
+@app.after_request
+def after_request(response):
+    logger.info("Response Headers:")
+    for header, value in response.headers.items():
+        logger.info(f"{header}: {value}")
+    return response
 
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
     if request.method == 'OPTIONS':
-        response = make_response()
-        response.headers.add('Access-Control-Allow-Origin', 'https://rassoulebrahimi.github.io')
-        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-        response.headers.add('Access-Control-Allow-Methods', 'POST')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
-        return response
+        return '', 204
     
     logging.info(f"Received {request.method} request for /register")
     logging.info(f"Request headers: {request.headers}")
     
     data = request.json
     if User.query.filter_by(email=data['email']).first():
-        response = make_response(jsonify({"error": "Email already registered"}), 400)
-        add_cors_headers(response)
-        return response
+        return jsonify({"error": "Email already registered"}), 400
     
     new_user = User(email=data['email'], name=data.get('name'))
     new_user.set_password(data['password'])
     db.session.add(new_user)
     db.session.commit()
     
-    response = make_response(jsonify({"message": "User registered successfully"}), 201)
-    add_cors_headers(response)
-    return response
+    return jsonify({"message": "User registered successfully"}), 201
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
