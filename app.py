@@ -6,7 +6,7 @@ from datetime import datetime
 from functools import wraps
 import tiktoken
 from flask import Flask, request, jsonify, session, make_response
-from flask_cors import CORS
+# from flask_cors import CORS
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -26,11 +26,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
-# Configure CORS
-CORS(app, resources={r"/*": {
-    "origins": "https://rassoulebrahimi.github.io",
-    "supports_credentials": True
-}})
+# # Configure CORS
+# CORS(app, resources={r"/*": {
+#     "origins": "https://rassoulebrahimi.github.io",
+#     "supports_credentials": True
+# }})
 
 # CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
 
@@ -288,17 +288,21 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Credentials'] = 'true'
     return response
 
+# Modify the after_request function
 @app.after_request
 def after_request(response):
+    response = add_cors_headers(response)
     logger.info("Response Headers:")
     for header, value in response.headers.items():
         logger.info(f"{header}: {value}")
     return response
 
+# Update the register route
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
     if request.method == 'OPTIONS':
-        return '', 204
+        response = make_response()
+        return add_cors_headers(response)
     
     logging.info(f"Received {request.method} request for /register")
     logging.info(f"Request headers: {request.headers}")
