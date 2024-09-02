@@ -5,11 +5,13 @@ import time
 from datetime import datetime
 from functools import wraps
 import tiktoken
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # Load environment variables
 load_dotenv()
@@ -20,10 +22,56 @@ logger = logging.getLogger(__name__)
 
 # Initialize Flask app
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key_here')  # Change this to a random secret key
+db = SQLAlchemy(app)
+
 CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"]}})
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+# Database Models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_login = db.Column(db.DateTime)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+class Lebenslauf(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Stellenanzeige(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Bewerbung(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    lebenslauf_id = db.Column(db.Integer, db.ForeignKey('lebenslauf.id'), nullable=False)
+    stellenanzeige_id = db.Column(db.Integer, db.ForeignKey('stellenanzeige.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    cost_info = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+# Create the database and tables
+with app.app_context():
+    db.create_all()
 
 def calculate_cost(input_tokens, output_tokens, model="gpt-3.5-turbo-0125", is_batch=False):
     input_price = 0.50
@@ -190,6 +238,14 @@ Bewerbung als {info['job_position']}
     
     return full_bewerbung.strip()
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return jsonify({"error": "Login required"}), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', 'https://rassoulebrahimi.github.io')
@@ -198,8 +254,38 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
 
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({"error": "Email already registered"}), 400
+    
+    new_user = User(email=data['email'], name=data.get('name'))
+    new_user.set_password(data['password'])
+    db.session.add(new_user)
+    db.session.commit()
+    
+    return jsonify({"message": "User registered successfully"}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    user = User.query.filter_by(email=data['email']).first()
+    if user and user.check_password(data['password']):
+        session['user_id'] = user.id
+        user.last_login = datetime.utcnow()
+        db.session.commit()
+        return jsonify({"message": "Logged in successfully"}), 200
+    return jsonify({"error": "Invalid email or password"}), 401
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return jsonify({"message": "Logged out successfully"}), 200
+
 @app.route('/generate_bewerbung', methods=['POST'])
 @rate_limit(max_per_minute=10)
+@login_required
 def api_generate_bewerbung():
     try:
         logger.info("Received request for generate_bewerbung")
@@ -226,9 +312,28 @@ def api_generate_bewerbung():
         if error_message:
             return jsonify({"error": error_message}), 500
 
+        # Save the generated Bewerbung
+        user_id = session['user_id']
+        new_lebenslauf = Lebenslauf(user_id=user_id, content=lebenslauf)
+        new_stellenanzeige = Stellenanzeige(user_id=user_id, content=stellenanzeige)
+        db.session.add(new_lebenslauf)
+        db.session.add(new_stellenanzeige)
+        db.session.flush()
+
+        new_bewerbung = Bewerbung(
+            user_id=user_id,
+            lebenslauf_id=new_lebenslauf.id,
+            stellenanzeige_id=new_stellenanzeige.id,
+            content=bewerbung,
+            cost_info=f"${cost:.6f}"
+        )
+        db.session.add(new_bewerbung)
+        db.session.commit()
+
         response = {
             "bewerbung": bewerbung,
-            "estimated_cost": f"${cost:.6f}"
+            "estimated_cost": f"${cost:.6f}",
+            "bewerbung_id": new_bewerbung.id
         }
 
         logger.info(f"Request processed in {time.time() - start_time:.2f} seconds")
@@ -237,7 +342,7 @@ def api_generate_bewerbung():
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten."}), 500
-    
+
 @app.route('/')
 def index():
     return "Hello, World! Application is running"

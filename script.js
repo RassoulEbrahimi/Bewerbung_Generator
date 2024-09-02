@@ -26,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const downloadTextBtn = document.getElementById('download-text');
     const copyTextBtn = document.getElementById('copy-text');
     const loadingIndicator = document.getElementById('loading-indicator');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const logoutBtn = document.getElementById('logout-btn');
+    const authSection = document.getElementById('auth-section');
+    const contentSection = document.getElementById('content-section');
 
     // Theme Management
     function updateThemeColor() {
@@ -140,13 +145,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify({ lebenslauf, stellenanzeige }),
                 mode: 'cors',
-                credentials: 'omit',  // Ensure only one credentials setting is used
+                credentials: 'include',  // Changed to 'include' to send cookies
                 signal: controller.signal
             });
 
             clearTimeout(timeoutId);
 
             if (!response.ok) {
+                if (response.status === 401) {
+                    throw new Error('Sie müssen sich anmelden, um eine Bewerbung zu generieren.');
+                }
                 if (response.status === 0) {
                     throw new Error('Network error. This might be a CORS issue. Please check the server configuration.');
                 }
@@ -163,6 +171,107 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Netzwerkfehler. Dies könnte ein CORS-Problem sein. Bitte überprüfen Sie die Serverkonfiguration.');
             }
             throw error;
+        }
+    }
+
+    // Authentication Functions
+    async function register(email, password, name) {
+        const response = await fetch('https://xbewerbung.onrender.com/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, name }),
+            mode: 'cors',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Registration failed');
+        }
+
+        return response.json();
+    }
+
+    async function login(email, password) {
+        const response = await fetch('https://xbewerbung.onrender.com/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+            mode: 'cors',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Login failed');
+        }
+
+        return response.json();
+    }
+
+    async function logout() {
+        const response = await fetch('https://xbewerbung.onrender.com/logout', {
+            method: 'POST',
+            mode: 'cors',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Logout failed');
+        }
+
+        return response.json();
+    }
+
+    // UI Update Functions
+    function showAuthSection() {
+        authSection.style.display = 'block';
+        contentSection.style.display = 'none';
+    }
+
+    function showContentSection() {
+        authSection.style.display = 'none';
+        contentSection.style.display = 'block';
+    }
+
+    // Form Submission Handlers
+    async function handleRegisterSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+        const name = document.getElementById('register-name').value;
+
+        try {
+            await register(email, password, name);
+            alert('Registration successful. Please log in.');
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    async function handleLoginSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        try {
+            await login(email, password);
+            showContentSection();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    async function handleLogout() {
+        try {
+            await logout();
+            showAuthSection();
+        } catch (error) {
+            alert(error.message);
         }
     }
 
@@ -212,6 +321,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Fehler beim Generieren der Bewerbung:', error.message);
             alert(`Ein Fehler ist aufgetreten: ${error.message}`);
             loadingIndicator.style.display = 'none';
+            if (error.message.includes('Sie müssen sich anmelden')) {
+                showAuthSection();
+            }
         }
     }
 
@@ -262,4 +374,11 @@ document.addEventListener('DOMContentLoaded', function() {
     copyTextBtn.addEventListener('click', handleCopyText);
 
     downloadTextBtn.addEventListener('click', handleDownloadText);
+    // New Event Listeners
+    registerForm.addEventListener('submit', handleRegisterSubmit);
+    loginForm.addEventListener('submit', handleLoginSubmit);
+    logoutBtn.addEventListener('click', handleLogout);
+
+    // Initial UI setup
+    showAuthSection();
 });

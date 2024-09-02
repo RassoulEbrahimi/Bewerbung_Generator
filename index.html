@@ -41,6 +41,27 @@
                     <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
                     <p>Erstellen Sie Ihre individuelle Bewerbung mit KI</p>
 
+                    <!-- New Authentication Section -->
+                    <div id="auth-section" style="display: none;">
+                        <form id="login-form" class="auth-form">
+                            <h3>Anmelden</h3>
+                            <input type="email" id="login-email" placeholder="E-Mail" required>
+                            <input type="password" id="login-password" placeholder="Passwort" required>
+                            <button type="submit" class="btn">Anmelden</button>
+                        </form>
+                        <form id="register-form" class="auth-form">
+                            <h3>Registrieren</h3>
+                            <input type="email" id="register-email" placeholder="E-Mail" required>
+                            <input type="password" id="register-password" placeholder="Passwort" required>
+                            <input type="text" id="register-name" placeholder="Name" required>
+                            <button type="submit" class="btn">Registrieren</button>
+                        </form>
+                    </div>
+
+                    <!-- Existing Content Section -->
+                    <div id="content-section">
+                        <button id="logout-btn" class="btn" style="display: none;">Abmelden</button>
+
                     <div class="input-toggle" role="tablist">
                         <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen" role="tab" aria-selected="true">Datei hochladen</button>
                         <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben" role="tab" aria-selected="false">Text eingeben</button>
