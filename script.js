@@ -174,24 +174,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Authentication Functions
+    
     async function register(email, password, name) {
-        const response = await fetch('https://xbewerbung.onrender.com/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password, name }),
-            mode: 'cors',
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || 'Registration failed');
+        try {
+            console.log('Attempting registration...');
+            const response = await fetch('https://xbewerbung.onrender.com/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password, name }),
+                mode: 'cors',
+                credentials: 'include'
+            });
+    
+            console.log('Response status:', response.status);
+            console.log('Response headers:', [...response.headers.entries()]);
+    
+            if (!response.ok) {
+                const data = await response.json();
+                console.error('Registration failed:', data.error);
+                throw new Error(data.error || 'Registration failed');
+            }
+    
+            const result = await response.json();
+            console.log('Registration successful:', result);
+            return result;
+        } catch (error) {
+            console.error('Error during registration:', error.message);
+            throw error;
         }
-
-        return response.json();
     }
 
     async function login(email, password) {

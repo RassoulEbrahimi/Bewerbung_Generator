@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 from functools import wraps
 import tiktoken
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, make_response
 from flask_cors import CORS
 from dotenv import load_dotenv
 import openai
@@ -26,12 +26,23 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
-# Configure CORS
-CORS(app, resources={r"/*": {
-    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", 
-                "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"],
-    "supports_credentials": True
-}})
+# # Configure CORS
+# CORS(app, resources={r"/*": {
+#     "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", 
+#                 "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"],
+#     "supports_credentials": True
+# }})
+
+# Add this function to log headers
+def log_headers(response):
+    logger.info("Response Headers:")
+    for header, value in response.headers.items():
+        logger.info(f"{header}: {value}")
+    return response
+
+# Apply the header logging to all responses
+app.after_request(log_headers)
+
 
 db = SQLAlchemy(app)
 
@@ -260,24 +271,41 @@ def login_required(f):
 #     response.headers.add('Access-Control-Allow-Credentials', 'true')
 #     return response
 
+
+# Update your routes to manually set CORS headers
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+
+
+
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
     if request.method == 'OPTIONS':
-        return '', 204
+        response = make_response()
+        add_cors_headers(response)
+        return response
     
     logging.info(f"Received {request.method} request for /register")
     logging.info(f"Request headers: {request.headers}")
     
     data = request.json
     if User.query.filter_by(email=data['email']).first():
-        return jsonify({"error": "Email already registered"}), 400
+        response = make_response(jsonify({"error": "Email already registered"}), 400)
+        add_cors_headers(response)
+        return response
     
     new_user = User(email=data['email'], name=data.get('name'))
     new_user.set_password(data['password'])
     db.session.add(new_user)
     db.session.commit()
     
-    return jsonify({"message": "User registered successfully"}), 201
+    response = make_response(jsonify({"message": "User registered successfully"}), 201)
+    add_cors_headers(response)
+    return response
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
