@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.getenv('SECRET_KEY', 'your_secret_key_here')  # Change this to a random secret key
+app.secret_key = os.getenv('SECRET_KEY')  # This will use the SECRET_KEY from your .env file
 db = SQLAlchemy(app)
 
 CORS(app, resources={r"/*": {"origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"]}})
