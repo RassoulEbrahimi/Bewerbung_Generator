@@ -35,7 +35,7 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allows cross-site cookies
 db = SQLAlchemy(app)
 
 CORS(app, resources={r"/*": {
-    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung"],
+    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://bewerbung-generator.onrender.com"],
     "methods": ["GET", "POST", "OPTIONS"],
     "allow_headers": ["Content-Type", "Authorization"],
     "supports_credentials": True
