@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY') or 'your_fallback_secret_key_here'
 
 # app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'your-secret-key'
 app.config['SESSION_COOKIE_SECURE'] = True  # for HTTPS
@@ -238,16 +238,15 @@ def generate_bewerbung(lebenslauf, stellenanzeige):
 def format_bewerbung(bewerbung, info):
     current_date = datetime.now().strftime('%d.%m.%Y')
     header = f"""{info['applicant_name']}
-{info['applicant_address']}
+    {info['applicant_address']}
 
-{info['company_name']}
-{info['company_address']}
+    {info['company_name']}
+    {info['company_address']}
 
-{current_date}
+    {current_date}
 
-Bewerbung als {info['job_position']}
+    Bewerbung als {info['job_position']}"""
 
-"""
     full_bewerbung = header + bewerbung
 
     if full_bewerbung.count("Mit freundlichen Grüßen") > 1:
