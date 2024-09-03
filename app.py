@@ -27,7 +27,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
-CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
+CORS(app, resources={r"/*": {
+    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung"],
+    "methods": ["GET", "POST", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"],
+    "supports_credentials": True
+}})
+
+# CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
 
 #inja bood hamechi
 
@@ -279,9 +286,16 @@ def after_request(response):
 # Update the register route
 @app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
+    app.logger.info(f"Received {request.method} request for /register")
+    app.logger.info(f"Headers: {request.headers}")
     if request.method == 'OPTIONS':
-        response = make_response()
-        return add_cors_headers(response)
+        # Explicitly return headers for preflight request
+        response = jsonify({'message': 'OK'})
+        response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
+        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        return response, 200
     
     logging.info(f"Received {request.method} request for /register")
     logging.info(f"Request headers: {request.headers}")
@@ -385,6 +399,15 @@ def api_generate_bewerbung():
 @app.route('/')
 def index():
     return "Hello, World! Application is running"
+
+@app.route('/test', methods=['GET', 'OPTIONS'])
+def test():
+    if request.method == 'OPTIONS':
+        response = jsonify({'message': 'OK'})
+        response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        return response, 200
+    return jsonify({"message": "Test successful"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
