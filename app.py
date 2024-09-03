@@ -360,12 +360,13 @@ def logout():
 @login_required
 def api_generate_bewerbung():
     if request.method == 'OPTIONS':
+        # Handle the preflight request
         response = jsonify({'message': 'CORS preflight successful'})
         response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
         response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
-        return response, 200
+        return response, 200  # Ensure the response status is 200 OK
     
     try:
         logger.info("Received request for generate_bewerbung")
