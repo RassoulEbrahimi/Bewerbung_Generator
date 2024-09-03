@@ -207,22 +207,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function login(email, password) {
-        const response = await fetch('https://xbewerbung.onrender.com/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-            mode: 'cors',
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            const data = await response.json();
-            throw new Error(data.error || 'Login failed');
+        try {
+            console.log('Attempting login...');
+            const response = await fetch('https://xbewerbung.onrender.com/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include'
+            });
+    
+            console.log('Response status:', response.status);
+            console.log('Response headers:', [...response.headers.entries()]);
+    
+            const responseData = await response.json();
+            console.log('Response data:', responseData);
+    
+            if (!response.ok) {
+                throw new Error(responseData.error || 'Login failed');
+            }
+    
+            console.log('Login successful:', responseData);
+            return responseData;
+        } catch (error) {
+            console.error('Error during login:', error.message);
+            throw error;
         }
-
-        return response.json();
     }
 
     async function logout() {

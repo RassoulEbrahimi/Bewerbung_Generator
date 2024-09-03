@@ -323,19 +323,28 @@ def login():
         return '', 204
     
     try:
+        app.logger.info("Login attempt received")
         data = request.json
-        app.logger.info(f"Login attempt for email: {data.get('email')}")
+        app.logger.info(f"Login data: {data}")
+        
+        if not data or 'email' not in data or 'password' not in data:
+            app.logger.error("Invalid login data received")
+            return jsonify({"error": "Invalid login data"}), 400
+        
         user = User.query.filter_by(email=data['email']).first()
+        app.logger.info(f"User found: {user is not None}")
+        
         if user and user.check_password(data['password']):
             session['user_id'] = user.id
             user.last_login = datetime.utcnow()
             db.session.commit()
             app.logger.info(f"Login successful for user: {user.id}")
             return jsonify({"message": "Logged in successfully"}), 200
+        
         app.logger.warning(f"Failed login attempt for email: {data.get('email')}")
         return jsonify({"error": "Invalid email or password"}), 401
     except Exception as e:
-        app.logger.error(f"Login error: {str(e)}")
+        app.logger.error(f"Login error: {str(e)}", exc_info=True)
         return jsonify({"error": "An unexpected error occurred"}), 500
     
 
