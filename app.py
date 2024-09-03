@@ -6,7 +6,8 @@ from datetime import datetime
 from functools import wraps
 import tiktoken
 from flask import Flask, request, jsonify, session, make_response
-# from flask_cors import CORS
+from flask import Flask
+from flask_cors import CORS
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -26,31 +27,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
-# # Configure CORS
-# CORS(app, resources={r"/*": {
-#     "origins": "https://rassoulebrahimi.github.io",
-#     "supports_credentials": True
-# }})
+CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
 
-# CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
-
-# # Configure CORS
-# CORS(app, resources={r"/*": {
-#     "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", 
-#                 "https://www.xbewerbung.com", "https://xbewerbung.com", "https://bewerbung-generator.onrender.com"],
-#     "supports_credentials": True
-# }})
-
-# Add this function to log headers
-# def log_headers(response):
-#     logger.info("Response Headers:")
-#     for header, value in response.headers.items():
-#         logger.info(f"{header}: {value}")
-#     return response
-
-# # Apply the header logging to all responses
-# app.after_request(log_headers)
-
+#inja bood hamechi
 
 db = SQLAlchemy(app)
 
