@@ -7,11 +7,11 @@ from functools import wraps
 import tiktoken
 from flask import Flask, request, jsonify, session, make_response
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
-from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 # Load environment variables
@@ -27,6 +27,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
+db = SQLAlchemy(app)
+
 CORS(app, resources={r"/*": {
     "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung"],
     "methods": ["GET", "POST", "OPTIONS"],
@@ -38,7 +40,6 @@ CORS(app, resources={r"/*": {
 
 #inja bood hamechi
 
-db = SQLAlchemy(app)
 
 # Initialize OpenAI client
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
