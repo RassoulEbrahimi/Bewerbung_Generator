@@ -27,6 +27,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY')
 
+# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'your-secret-key'
+app.config['SESSION_COOKIE_SECURE'] = True  # for HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allows cross-site cookies
+
 db = SQLAlchemy(app)
 
 CORS(app, resources={r"/*": {
@@ -317,14 +322,22 @@ def login():
     if request.method == 'OPTIONS':
         return '', 204
     
-    data = request.json
-    user = User.query.filter_by(email=data['email']).first()
-    if user and user.check_password(data['password']):
-        session['user_id'] = user.id
-        user.last_login = datetime.utcnow()
-        db.session.commit()
-        return jsonify({"message": "Logged in successfully"}), 200
-    return jsonify({"error": "Invalid email or password"}), 401
+    try:
+        data = request.json
+        app.logger.info(f"Login attempt for email: {data.get('email')}")
+        user = User.query.filter_by(email=data['email']).first()
+        if user and user.check_password(data['password']):
+            session['user_id'] = user.id
+            user.last_login = datetime.utcnow()
+            db.session.commit()
+            app.logger.info(f"Login successful for user: {user.id}")
+            return jsonify({"message": "Logged in successfully"}), 200
+        app.logger.warning(f"Failed login attempt for email: {data.get('email')}")
+        return jsonify({"error": "Invalid email or password"}), 401
+    except Exception as e:
+        app.logger.error(f"Login error: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
+    
 
 @app.route('/logout', methods=['POST', 'OPTIONS'])
 def logout():
