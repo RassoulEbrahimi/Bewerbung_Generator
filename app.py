@@ -257,6 +257,8 @@ def format_bewerbung(bewerbung, info):
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        if request.method == 'OPTIONS':
+            return f(*args, **kwargs)
         if 'user_id' not in session:
             return jsonify({"error": "Login required"}), 401
         return f(*args, **kwargs)
@@ -272,21 +274,21 @@ def login_required(f):
 
 
 # Update your routes to manually set CORS headers
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    response.headers['Access-Control-Allow-Credentials'] = 'true'
-    return response
+# def add_cors_headers(response):
+#     response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
+#     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+#     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+#     response.headers['Access-Control-Allow-Credentials'] = 'true'
+#     return response
 
 # Modify the after_request function
-@app.after_request
-def after_request(response):
-    response = add_cors_headers(response)
-    logger.info("Response Headers:")
-    for header, value in response.headers.items():
-        logger.info(f"{header}: {value}")
-    return response
+# @app.after_request
+# def after_request(response):
+#     response = add_cors_headers(response)
+#     logger.info("Response Headers:")
+#     for header, value in response.headers.items():
+#         logger.info(f"{header}: {value}")
+#     return response
 
 # Update the register route
 @app.route('/register', methods=['POST', 'OPTIONS'])
@@ -360,13 +362,7 @@ def logout():
 @login_required
 def api_generate_bewerbung():
     if request.method == 'OPTIONS':
-        # Handle the preflight request
-        response = jsonify({'message': 'CORS preflight successful'})
-        response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
-        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        return response, 200  # Ensure the response status is 200 OK
+        return '', 204  # No content needed for preflight request
     
     try:
         logger.info("Received request for generate_bewerbung")
