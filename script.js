@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutBtn = document.getElementById('logout-btn');
     const authSection = document.getElementById('auth-section');
     const contentSection = document.getElementById('content-section');
+    const tabButtons = document.querySelectorAll('.auth-tab-btn');
+    const authForms = document.querySelectorAll('.auth-form');
 
     // Theme Management
     function updateThemeColor() {
@@ -66,6 +68,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const savedTheme = localStorage.getItem('theme');
         setTheme(savedTheme || getSystemPreference());
     }
+
+    function switchTab(tabId) {
+        tabButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabId);
+        });
+    
+        authForms.forEach(form => { 
+            if (form.id === `${tabId}-form`) {
+                form.classList.add('fade-in');
+                form.classList.add('active');
+                form.classList.remove('fade-out');
+            } else {
+                form.classList.add('fade-out');
+                form.classList.remove('active');
+                form.classList.remove('fade-in');
+            }
+        });
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
 
     // Apply theme on load
     applyTheme();
@@ -417,4 +441,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial UI setup
     showAuthSection();
+
+    // Initialize with login tab active
+    switchTab('login');
 });

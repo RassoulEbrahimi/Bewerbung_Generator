@@ -43,19 +43,27 @@
 
                     <!-- New Authentication Section -->
                     <div id="auth-section" style="display: none;">
-                        <form id="login-form" class="auth-form">
-                            <h3>Anmelden</h3>
-                            <input type="email" id="login-email" placeholder="E-Mail" required>
-                            <input type="password" id="login-password" placeholder="Passwort" required>
-                            <button type="submit" class="btn">Anmelden</button>
-                        </form>
-                        <form id="register-form" class="auth-form">
-                            <h3>Registrieren</h3>
-                            <input type="email" id="register-email" placeholder="E-Mail" required>
-                            <input type="password" id="register-password" placeholder="Passwort" required>
-                            <input type="text" id="register-name" placeholder="Name" required>
-                            <button type="submit" class="btn">Registrieren</button>
-                        </form>
+                        <div class="auth-tabs">
+                            <button class="auth-tab-btn active" data-tab="login">Anmelden</button>
+                            <button class="auth-tab-btn" data-tab="register">Registrieren</button>
+                        </div>
+                        
+                        <div class="auth-content">
+                            <div id="login-form" class="auth-form active">
+                                <h3>Anmelden</h3>
+                                <input type="email" id="login-email" placeholder="E-Mail" required>
+                                <input type="password" id="login-password" placeholder="Passwort" required>
+                                <button type="submit" class="btn">Anmelden</button>
+                            </div>
+                            
+                            <div id="register-form" class="auth-form">
+                                <h3>Registrieren</h3>
+                                <input type="text" id="register-name" placeholder="Name" required>
+                                <input type="email" id="register-email" placeholder="E-Mail" required>
+                                <input type="password" id="register-password" placeholder="Passwort" required>
+                                <button type="submit" class="btn">Registrieren</button>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Existing Content Section -->
