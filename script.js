@@ -287,31 +287,36 @@ document.addEventListener('DOMContentLoaded', function() {
         logoutBtn.style.display = 'block'; // Show logout button
     }
 
-    // Form Submission Handlers
-    async function handleRegisterSubmit(e) {
-        e.preventDefault();
-        const email = document.getElementById('register-email').value;
-        const password = document.getElementById('register-password').value;
-        const name = document.getElementById('register-name').value;
-
-        try {
-            await register(email, password, name);
-            alert('Registration successful. Please log in.');
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
     async function handleLoginSubmit(e) {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
-
+    
         try {
-            await login(email, password);
+            const result = await login(email, password);
+            console.log('Login successful:', result);
             showContentSection();
         } catch (error) {
-            alert(error.message);
+            console.error('Login failed:', error);
+            alert(`Login failed: ${error.message}`);
+        }
+    }
+
+    // Form Submission Handlers
+    async function handleRegisterSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('register-name').value;
+        const email = document.getElementById('register-email').value;
+        const password = document.getElementById('register-password').value;
+    
+        try {
+            const result = await register(email, password, name);
+            console.log('Registration successful:', result);
+            alert('Registration successful. Please log in.');
+            switchTab('login');
+        } catch (error) {
+            console.error('Registration failed:', error);
+            alert(`Registration failed: ${error.message}`);
         }
     }
 
@@ -435,8 +440,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     downloadTextBtn.addEventListener('click', handleDownloadText);
     // New Event Listeners
-    registerForm.addEventListener('submit', handleRegisterSubmit);
     loginForm.addEventListener('submit', handleLoginSubmit);
+    registerForm.addEventListener('submit', handleRegisterSubmit);
     logoutBtn.addEventListener('click', handleLogout);
 
     // Initial UI setup
