@@ -55,6 +55,14 @@ body.dark-mode footer {
 .header {
     position: relative;
     z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem;
+}
+
+.header-buttons {
+    display: flex;
+    align-items: center;
 }
 
 body.dark-mode h2,
@@ -697,6 +705,7 @@ body.dark-mode .input-toggle .btn:hover {
     border: 1px solid white;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-right: 1rem;
 }
 
 #logout-btn:hover {
@@ -795,6 +804,16 @@ body.dark-mode .input-toggle .btn:hover {
         box-shadow: 0 0 55px rgba(0, 0, 0, .1);
         color: var(--text-color);
         border: 0.7px solid #fff;
+    }
+
+    .header-buttons {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    #logout-btn {
+        margin-right: 0;
+        margin-bottom: 0.5rem;
     }
 }
 

@@ -26,7 +26,10 @@
 
     <!-- <button id="dark-mode-toggle" aria-label="Toggle Dark Mode">🌙</button> -->
     <header class="header" role="banner">
-        <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        <div class="header-buttons">
+            <button id="logout-btn" class="btn" style="display: none;">Abmelden</button>
+            <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+        </div>
     </header>
 
     <main id="home" class="main-content" role="main">
@@ -68,9 +71,9 @@
                         </div>                    
                     </div>
 
-                    <!-- Existing Content Section -->
-                    <div id="content-section">
-                        <button id="logout-btn" class="btn" style="display: none;">Abmelden</button>
+                <!-- Existing Content Section -->
+                <div id="content-section">
+                    <!-- <button id="logout-btn" class="btn" style="display: none;">Abmelden</button> -->
 
                     <div class="input-toggle" role="tablist">
                         <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen" role="tab" aria-selected="true">Datei hochladen</button>
