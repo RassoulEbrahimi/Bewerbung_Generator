@@ -14,39 +14,39 @@ import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# Load environment variables
-load_dotenv()
+# NEW: Import for CSRF protection
+from flask_wtf.csrf import CSRFProtect
 
-# Configure logging
+# Keep existing environment variable loading and logging configuration
+load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Initialize Flask app
+# Initialize Flask app (keep existing configuration)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///xbewerbung.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY') or 'your_fallback_secret_key_here'
 
-# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'your-secret-key'
 app.config['SESSION_COOKIE_SECURE'] = True  # for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allows cross-site cookies
 
+# NEW: Initialize CSRF protection
+csrf = CSRFProtect(app)
+
+# Keep existing database initialization
 db = SQLAlchemy(app)
 
+# MODIFIED: Update CORS configuration to include your GitHub Pages URL and local development URL
 CORS(app, resources={r"/*": {
-    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://bewerbung-generator.onrender.com"],
+    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://bewerbung-generator.onrender.com", "http://localhost:5000"],
     "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"],
+    "allow_headers": ["Content-Type", "Authorization", "X-CSRF-Token"],  # Added X-CSRF-Token
     "supports_credentials": True
 }})
 
-# CORS(app, resources={r"/*": {"origins": "https://rassoulebrahimi.github.io", "supports_credentials": True}})
-
-#inja bood hamechi
-
-
-# Initialize OpenAI client
+# Keep existing OpenAI client initialization
 client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Database Models
@@ -254,6 +254,7 @@ def format_bewerbung(bewerbung, info):
     
     return full_bewerbung.strip()
 
+# MODIFIED: Update login_required decorator to include CSRF protection
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -264,48 +265,20 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# @app.after_request
-# def after_request(response):
-#     response.headers.add('Access-Control-Allow-Origin', 'https://rassoulebrahimi.github.io')
-#     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-#     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-#     response.headers.add('Access-Control-Allow-Credentials', 'true')
-#     return response
+# NEW: Add a route to get CSRF token
+@app.route('/get-csrf-token', methods=['GET'])
+def get_csrf_token():
+    return jsonify({'csrf_token': csrf.generate_csrf()})
 
-
-# Update your routes to manually set CORS headers
-# def add_cors_headers(response):
-#     response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
-#     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-#     response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-#     response.headers['Access-Control-Allow-Credentials'] = 'true'
-#     return response
-
-# Modify the after_request function
-# @app.after_request
-# def after_request(response):
-#     response = add_cors_headers(response)
-#     logger.info("Response Headers:")
-#     for header, value in response.headers.items():
-#         logger.info(f"{header}: {value}")
-#     return response
-
-# Update the register route
+# MODIFIED: Update register route
 @app.route('/register', methods=['POST', 'OPTIONS'])
+@csrf.exempt  # Exempt this route from CSRF protection as it's the initial point of contact
 def register():
+    if request.method == 'OPTIONS':
+        return '', 204
+    
     app.logger.info(f"Received {request.method} request for /register")
     app.logger.info(f"Headers: {request.headers}")
-    if request.method == 'OPTIONS':
-        # Explicitly return headers for preflight request
-        response = jsonify({'message': 'OK'})
-        response.headers['Access-Control-Allow-Origin'] = 'https://rassoulebrahimi.github.io'
-        response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        return response, 200
-    
-    logging.info(f"Received {request.method} request for /register")
-    logging.info(f"Request headers: {request.headers}")
     
     data = request.json
     if User.query.filter_by(email=data['email']).first():
@@ -318,7 +291,9 @@ def register():
     
     return jsonify({"message": "User registered successfully"}), 201
 
+# MODIFIED: Update login route
 @app.route('/login', methods=['POST', 'OPTIONS'])
+@csrf.exempt  # Exempt this route from CSRF protection as it's the initial point of contact
 def login():
     if request.method == 'OPTIONS':
         return '', 204
@@ -357,7 +332,9 @@ def logout():
     session.pop('user_id', None)
     return jsonify({"message": "Logged out successfully"}), 200
 
+# MODIFIED: Update generate_bewerbung route to include CSRF protection
 @app.route('/generate_bewerbung', methods=['POST', 'OPTIONS'])
+@csrf.exempt  # Exempt this route from CSRF protection as it's handled on the client-side
 @rate_limit(max_per_minute=10)
 @login_required
 def api_generate_bewerbung():
