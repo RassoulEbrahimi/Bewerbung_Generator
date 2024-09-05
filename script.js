@@ -256,9 +256,11 @@ document.addEventListener('DOMContentLoaded', function() {
         contentSection.style.display = 'none';
     }
 
+    // Modify your showContentSection function
     function showContentSection() {
         authSection.style.display = 'none';
         contentSection.style.display = 'block';
+        logoutBtn.style.display = 'block'; // Show logout button
     }
 
     // Form Submission Handlers
@@ -289,12 +291,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Add this function to handle logout
     async function handleLogout() {
         try {
-            await logout();
-            showAuthSection();
+            const response = await fetch('https://xbewerbung.onrender.com/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                showAuthSection();
+                logoutBtn.style.display = 'none';
+            } else {
+                throw new Error('Logout failed');
+            }
         } catch (error) {
-            alert(error.message);
+            console.error('Error during logout:', error);
+            alert('Fehler beim Abmelden. Bitte versuchen Sie es erneut.');
         }
     }
 
