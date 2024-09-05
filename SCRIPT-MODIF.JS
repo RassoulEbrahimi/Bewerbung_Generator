@@ -45,9 +45,46 @@ document.addEventListener('DOMContentLoaded', function() {
         contentSection
     });
 
-    // ... (keep all the existing functions like updateThemeColor, setTheme, etc.)
+    // UI Update Functions
+    function showAuthSection() {
+        console.log('Showing auth section');
+        if (authSection && contentSection) {
+            authSection.style.display = 'block';
+            contentSection.style.display = 'none';
+        } else {
+            console.error('Auth section or content section not found');
+        }
+    }
 
-    // Modified login function with more logging
+    function showContentSection() {
+        console.log('Showing content section');
+        if (authSection && contentSection && logoutBtn) {
+            authSection.style.display = 'none';
+            contentSection.style.display = 'block';
+            logoutBtn.style.display = 'block';
+        } else {
+            console.error('Auth section, content section, or logout button not found');
+        }
+    }
+
+    function switchTab(tabId) {
+        console.log(`Switching to tab: ${tabId}`);
+        tabButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabId);
+        });
+    
+        authForms.forEach(form => { 
+            if (form.id === `${tabId}-form`) {
+                form.classList.add('fade-in', 'active');
+                form.classList.remove('fade-out');
+            } else {
+                form.classList.add('fade-out');
+                form.classList.remove('fade-in', 'active');
+            }
+        });
+    }
+
+    // API functions
     async function login(email, password) {
         console.log(`Attempting login for email: ${email}`);
         try {
@@ -61,8 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     
             console.log('Login response status:', response.status);
-            console.log('Login response headers:', [...response.headers.entries()]);
-    
             const responseData = await response.json();
             console.log('Login response data:', responseData);
     
@@ -78,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Modified register function with more logging
     async function register(email, password, name) {
         console.log(`Attempting registration for email: ${email}`);
         try {
@@ -93,8 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     
             console.log('Registration response status:', response.status);
-            console.log('Registration response headers:', [...response.headers.entries()]);
-    
             if (!response.ok) {
                 const data = await response.json();
                 console.error('Registration failed:', data.error);
@@ -110,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Modified handleLoginSubmit function
+    // Event handler functions
     async function handleLoginSubmit(e) {
         e.preventDefault();
         console.log('Login form submitted');
@@ -127,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Modified handleRegisterSubmit function
     async function handleRegisterSubmit(e) {
         e.preventDefault();
         console.log('Register form submitted');
@@ -146,7 +177,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // ... (keep all other existing functions)
+    async function handleLogout() {
+        console.log('Logout initiated');
+        try {
+            const response = await fetch(`${API_URL}/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+    
+            if (response.ok) {
+                console.log('Logout successful');
+                showAuthSection();
+                logoutBtn.style.display = 'none';
+            } else {
+                throw new Error('Logout failed');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+            alert('Fehler beim Abmelden. Bitte versuchen Sie es erneut.');
+        }
+    }
 
     // Event Listeners
     if (loginForm) {
@@ -170,7 +220,9 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Logout button not found in the DOM');
     }
 
-    // ... (keep all other existing event listeners)
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
 
     // Initial UI setup
     showAuthSection();

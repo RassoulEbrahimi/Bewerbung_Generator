@@ -45,6 +45,28 @@ document.addEventListener('DOMContentLoaded', function() {
         contentSection
     });
 
+    // UI Update Functions
+    function showAuthSection() {
+        console.log('Showing auth section');
+        if (authSection && contentSection) {
+            authSection.style.display = 'block';
+            contentSection.style.display = 'none';
+        } else {
+            console.error('Auth section or content section not found');
+        }
+    }
+
+    function showContentSection() {
+        console.log('Showing content section');
+        if (authSection && contentSection && logoutBtn) {
+            authSection.style.display = 'none';
+            contentSection.style.display = 'block';
+            logoutBtn.style.display = 'block';
+        } else {
+            console.error('Auth section, content section, or logout button not found');
+        }
+    }
+    
     // Theme Management
     function updateThemeColor() {
         const isDarkMode = document.body.classList.contains('dark-mode');
@@ -81,19 +103,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function switchTab(tabId) {
+        console.log(`Switching to tab: ${tabId}`);
         tabButtons.forEach(btn => {
             btn.classList.toggle('active', btn.dataset.tab === tabId);
         });
     
         authForms.forEach(form => { 
             if (form.id === `${tabId}-form`) {
-                form.classList.add('fade-in');
-                form.classList.add('active');
+                form.classList.add('fade-in', 'active');
                 form.classList.remove('fade-out');
             } else {
                 form.classList.add('fade-out');
-                form.classList.remove('active');
-                form.classList.remove('fade-in');
+                form.classList.remove('fade-in', 'active');
             }
         });
     }
@@ -167,7 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Modified login function with more logging
+    // API functions
+    // Modified login function with more logging 
     async function login(email, password) {
         console.log(`Attempting login for email: ${email}`);
         try {
@@ -272,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Modified handleLoginSubmit function
+    // Event handler functions
     async function handleLoginSubmit(e) {
         e.preventDefault();
         console.log('Login form submitted');
@@ -310,13 +332,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add this function to handle logout
     async function handleLogout() {
+        console.log('Logout initiated');
         try {
-            const response = await fetch('https://xbewerbung.onrender.com/logout', {
+            const response = await fetch(`${API_URL}/logout`, {
                 method: 'POST',
                 credentials: 'include'
             });
     
             if (response.ok) {
+                console.log('Logout successful');
                 showAuthSection();
                 logoutBtn.style.display = 'none';
             } else {
@@ -425,6 +449,10 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Logout button not found in the DOM');
     }
 
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
     // Additional Event Listeners
     lebenslaufInput.addEventListener('change', function(e) {
         handleFileInputChange(this, 'Lebenslauf');
@@ -453,6 +481,17 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', handleLoginSubmit);
     registerForm.addEventListener('submit', handleRegisterSubmit);
     logoutBtn.addEventListener('click', handleLogout);
+
+    function showContentSection() {
+        console.log('Showing content section');
+        if (authSection && contentSection && logoutBtn) {
+            authSection.style.display = 'none';
+            contentSection.style.display = 'block';
+            logoutBtn.style.display = 'block';
+        } else {
+            console.error('Auth section, content section, or logout button not found');
+        }
+    }
 
     // Initial UI setup
     showAuthSection();
