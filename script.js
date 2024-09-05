@@ -6,6 +6,9 @@
     }
 })();
 
+// Define API_URL
+const API_URL = 'https://xbewerbung.onrender.com';
+
 // Main execution
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
@@ -33,6 +36,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentSection = document.getElementById('content-section');
     const tabButtons = document.querySelectorAll('.auth-tab-btn');
     const authForms = document.querySelectorAll('.auth-form');
+
+    console.log('DOM Elements loaded:', {
+        loginForm,
+        registerForm,
+        logoutBtn,
+        authSection,
+        contentSection
+    });
 
     // Theme Management
     function updateThemeColor() {
@@ -156,6 +167,37 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Modified login function with more logging
+    async function login(email, password) {
+        console.log(`Attempting login for email: ${email}`);
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+                credentials: 'include'
+            });
+    
+            console.log('Login response status:', response.status);
+            console.log('Login response headers:', [...response.headers.entries()]);
+    
+            const responseData = await response.json();
+            console.log('Login response data:', responseData);
+    
+            if (!response.ok) {
+                throw new Error(responseData.error || 'Login failed');
+            }
+    
+            console.log('Login successful');
+            return responseData;
+        } catch (error) {
+            console.error('Error during login:', error);
+            throw error;
+        }
+    }
+
     // API Interaction
     async function generateBewerbung(lebenslauf, stellenanzeige) {
         try {
@@ -198,11 +240,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    
+    // Modified register function with more logging
     async function register(email, password, name) {
+        console.log(`Attempting registration for email: ${email}`);
         try {
-            console.log('Attempting registration...');
-            const response = await fetch('https://xbewerbung.onrender.com/register', {
+            const response = await fetch(`${API_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -212,8 +254,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 credentials: 'include'
             });
     
-            console.log('Response status:', response.status);
-            console.log('Response headers:', [...response.headers.entries()]);
+            console.log('Registration response status:', response.status);
+            console.log('Registration response headers:', [...response.headers.entries()]);
     
             if (!response.ok) {
                 const data = await response.json();
@@ -225,70 +267,15 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Registration successful:', result);
             return result;
         } catch (error) {
-            console.error('Error during registration:', error.message);
+            console.error('Error during registration:', error);
             throw error;
         }
     }
 
-    async function login(email, password) {
-        try {
-            console.log('Attempting login...');
-            const response = await fetch('https://xbewerbung.onrender.com/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-                credentials: 'include'
-            });
-    
-            console.log('Response status:', response.status);
-            console.log('Response headers:', [...response.headers.entries()]);
-    
-            const responseData = await response.json();
-            console.log('Response data:', responseData);
-    
-            if (!response.ok) {
-                throw new Error(responseData.error || 'Login failed');
-            }
-    
-            console.log('Login successful:', responseData);
-            return responseData;
-        } catch (error) {
-            console.error('Error during login:', error.message);
-            throw error;
-        }
-    }
-
-    async function logout() {
-        const response = await fetch('https://xbewerbung.onrender.com/logout', {
-            method: 'POST',
-            mode: 'cors',
-            credentials: 'include'
-        });
-
-        if (!response.ok) {
-            throw new Error('Logout failed');
-        }
-
-        return response.json();
-    }
-
-    // UI Update Functions
-    function showAuthSection() {
-        authSection.style.display = 'block';
-        contentSection.style.display = 'none';
-    }
-
-    // Modify your showContentSection function
-    function showContentSection() {
-        authSection.style.display = 'none';
-        contentSection.style.display = 'block';
-        logoutBtn.style.display = 'block'; // Show logout button
-    }
-
+    // Modified handleLoginSubmit function
     async function handleLoginSubmit(e) {
         e.preventDefault();
+        console.log('Login form submitted');
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
     
@@ -302,9 +289,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Form Submission Handlers
+    // Modified handleRegisterSubmit function
     async function handleRegisterSubmit(e) {
         e.preventDefault();
+        console.log('Register form submitted');
         const name = document.getElementById('register-name').value;
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
@@ -413,6 +401,28 @@ document.addEventListener('DOMContentLoaded', function() {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    }
+
+    // Event Listeners
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLoginSubmit);
+        console.log('Login form event listener attached');
+    } else {
+        console.error('Login form not found in the DOM');
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegisterSubmit);
+        console.log('Register form event listener attached');
+    } else {
+        console.error('Register form not found in the DOM');
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+        console.log('Logout button event listener attached');
+    } else {
+        console.error('Logout button not found in the DOM');
     }
 
     // Additional Event Listeners
