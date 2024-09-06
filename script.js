@@ -203,6 +203,15 @@ document.addEventListener('DOMContentLoaded', function() {
         input.classList.remove('error');
     }
 
+    // NEW: Show Error MSG
+    function showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = message;
+        document.body.appendChild(errorDiv);
+        setTimeout(() => errorDiv.remove(), 5000); // Remove after 5 seconds
+    }
+
     // NEW: Loading indicator functions
     function showLoading() {
         const overlay = document.createElement('div');
@@ -277,6 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({ email, password }),
                 credentials: 'include'
@@ -286,7 +296,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const responseData = await response.json();
     
             if (!response.ok) {
-                throw new Error(responseData.error || 'Login failed');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Anmeldung fehlgeschlagen');
             }
     
             console.log('Login successful');
@@ -342,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // MODIFIED: Register function
-    // Modified register function with more logging
     async function register(email, password, name) {
         console.log(`Attempting registration for email: ${email}`);
         showLoading();
@@ -359,9 +369,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Registration response status:', response.status);
     
             if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.error || 'Registration failed');
-            }
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Registrierung fehlgeschlagen');
+            }        
     
             const result = await response.json();
             console.log('Registration successful:', result);
@@ -384,6 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const rememberMe = document.getElementById('remember-me').checked;
     
         try {
+            showLoading();
             const result = await login(email, password);
             console.log('Login successful:', result);
             if (rememberMe) {
@@ -394,7 +405,9 @@ document.addEventListener('DOMContentLoaded', function() {
             showContentSection();
         } catch (error) {
             console.error('Login failed:', error);
-            alert(`Login failed: ${error.message}`);
+            showErrorMessage(error.message || 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+        } finally {
+            hideLoading();
         }
     }
 
@@ -408,22 +421,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('register-password').value;
     
         try {
+            showLoading();
             const result = await register(email, password, name);
             console.log('Registration successful:', result);
-            alert('Registration successful. Please log in.');
+            showErrorMessage('Registrierung erfolgreich. Bitte melden Sie sich an.');
             switchTab('login');
         } catch (error) {
             console.error('Registration failed:', error);
-            alert(`Registration failed: ${error.message}`);
+            showErrorMessage(error.message || 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
+        } finally {
+            hideLoading();
         }
     }
+    
 
     // Logout handler (Keep this as is)
     async function handleLogout() {
         console.log('Logout initiated');
         try {
+            const csrfToken = await getCsrfToken(); // Make sure this function is implemented
             const response = await fetch(`${API_URL}/logout`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({}), // Send an empty object
                 credentials: 'include'
             });
     
@@ -432,7 +455,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 showAuthSection();
                 logoutBtn.style.display = 'none';
             } else {
-                throw new Error('Logout failed');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Abmeldung fehlgeschlagen');
             }
         } catch (error) {
             console.error('Error during logout:', error);

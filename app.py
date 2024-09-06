@@ -329,8 +329,12 @@ def logout():
     if request.method == 'OPTIONS':
         return '', 204
     
+    if 'user_id' not in session:
+        return jsonify({"error": "Sie sind nicht angemeldet."}), 400
+    
     session.pop('user_id', None)
-    return jsonify({"message": "Logged out successfully"}), 200
+    return jsonify({"message": "Erfolgreich abgemeldet"}), 200
+
 
 # MODIFIED: Update generate_bewerbung route to include CSRF protection
 @app.route('/generate_bewerbung', methods=['POST', 'OPTIONS'])
