@@ -13,11 +13,7 @@ from dotenv import load_dotenv
 import openai
 from tenacity import retry, stop_after_attempt, wait_exponential
 from werkzeug.security import generate_password_hash, check_password_hash
-
-# NEW: Import for CSRF protection
-from flask_wtf.csrf import CSRFProtect
-from flask_wtf.csrf import generate_csrf
-
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 # Keep existing environment variable loading and logging configuration
 load_dotenv()
@@ -34,7 +30,7 @@ app.config['SESSION_COOKIE_SECURE'] = True  # for HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allows cross-site cookies
 
-# NEW: Initialize CSRF protection
+# Initialize CSRF protection
 csrf = CSRFProtect(app)
 csrf.init_app(app)
 
@@ -43,9 +39,9 @@ db = SQLAlchemy(app)
 
 # MODIFIED: Update CORS configuration to include your GitHub Pages URL and local development URL
 CORS(app, resources={r"/*": {
-    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://bewerbung-generator.onrender.com", "http://localhost:5000"],
+    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "http://localhost:5000"],
     "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization", "X-CSRF-Token"],  # Added X-CSRF-Token
+    "allow_headers": ["Content-Type", "Authorization", "X-CSRF-Token"],
     "supports_credentials": True
 }})
 
@@ -268,12 +264,11 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# NEW: Add a route to get CSRF token
+# Add a route to get CSRF token
 @app.route('/get-csrf-token', methods=['GET'])
 def get_csrf_token():
     try:
-        token = csrf.generate_csrf()
-        app.logger.info(f"Generated CSRF token: {token}")
+        token = generate_csrf()
         return jsonify({'csrf_token': token})
     except Exception as e:
         app.logger.error(f"Error generating CSRF token: {str(e)}")
