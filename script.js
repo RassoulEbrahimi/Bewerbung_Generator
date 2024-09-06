@@ -62,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             authSection.style.display = 'none';
             contentSection.style.display = 'block';
             logoutBtn.style.display = 'block';
+            hideLoading(); // Add this line to ensure the loading indicator is hidden
         } else {
             console.error('Auth section, content section, or logout button not found');
         }
@@ -397,8 +398,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('login-password').value;
         const rememberMe = document.getElementById('remember-me').checked;
     
+        console.log('Login submission started');
         try {
             showLoading();
+            console.log('Loading indicator shown');
             const result = await login(email, password);
             console.log('Login successful:', result);
             if (rememberMe) {
@@ -407,11 +410,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 localStorage.removeItem('rememberMe');
             }
             showContentSection();
+            console.log('Content section shown');
         } catch (error) {
             console.error('Login failed:', error);
             showErrorMessage(error.message || 'Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.');
         } finally {
             hideLoading();
+            console.log('Loading indicator hidden');
         }
     }
 
@@ -630,6 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
             authSection.style.display = 'none';
             contentSection.style.display = 'block';
             logoutBtn.style.display = 'block';
+            hideLoading(); // Add this line to ensure the loading indicator is hidden
         } else {
             console.error('Auth section, content section, or logout button not found');
         }
