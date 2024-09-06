@@ -743,7 +743,7 @@ body.dark-mode .input-toggle .btn:hover {
   
   .auth-form.active {
     opacity: 1;
-    visibility: visible;
+    /* visibility: visible; */
   }
   
 /* NEW: Add blur effect for transitions */
