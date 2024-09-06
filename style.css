@@ -36,6 +36,7 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* Keep existing dark mode styles */
 body.dark-mode {
     --bg-color: #081b29;
     --text-color: #79ceff;
@@ -51,7 +52,17 @@ body.dark-mode footer {
     background-color: transparent;
 }
 
-/* Ensure the header is above the video */
+body.dark-mode h2,
+body.dark-mode p,
+body.dark-mode a {
+    color: #b8ebff;
+}
+
+body.dark-mode .project-description h2 {
+    color: #b8ebff;
+}
+
+/* MODIFIED: Update header styles */
 .header {
     position: relative;
     z-index: 2;
@@ -65,37 +76,37 @@ body.dark-mode footer {
     align-items: center;
 }
 
-body.dark-mode h2,
-body.dark-mode p,
-body.dark-mode a {
-    color: #b8ebff;
+/* NEW: Add styles for logout button */
+#logout-btn {
+    padding: 0.5rem 1rem;
+    background: var(--btn-bg-blue);
+    color: var(--text-color);
+    border-radius: 0.8rem;
+    border: 1px solid white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
 }
 
-body.dark-mode .project-description h2 {
-    color: #b8ebff;
+#logout-btn:hover {
+    background: rgba(108, 208, 255, 0.672);
+    border: 1.5px solid #081b29;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Additional dark mode styles for other elements */
+/* MODIFIED: Update theme toggle button styles */
 #theme-toggle-btn {
     background: none;
     border: none;
     font-size: 2.5rem;
     cursor: pointer;
     color: #b8ebff;
-    position: absolute;
-    top: 3rem;
-    left: 3rem;
-    z-index: 1000;
     transition: transform 0.5s ease;
 }
 
 #theme-toggle-btn:hover {
-    /* transform: ; */
-    transform: translateY(8px) translateX(-8px) scale(1.3);
-}
-
-body.dark-mode .input-toggle .btn {
-    color: #b8ebff;
+    transform: scale(1.2);
 }
 
 /* Base HTML and body styles */
@@ -656,7 +667,7 @@ body.dark-mode .input-toggle .btn:hover {
     border-color: white;
 }
 
-/* Authentication Forms */
+/* MODIFIED: Update authentication form styles */
 .auth-form {
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
@@ -667,6 +678,7 @@ body.dark-mode .input-toggle .btn:hover {
 .auth-form h3 {
     margin-bottom: 15px;
     font-size: 1.8rem;
+    color: var(--text-color);
 }
 
 .auth-form input {
@@ -691,31 +703,10 @@ body.dark-mode .input-toggle .btn:hover {
 }
 
 .auth-form button:hover {
-    background: rgba(88, 152, 255, 0.8);
+    background: rgba(88, 152, 255, 0.85);
 }
 
-#logout-btn {
-    position: absolute;
-    top: 3rem;
-    right: 3rem;
-    padding: 0.5rem 1rem;
-    background: var(--btn-bg-blue);
-    color: var(--text-color);
-    border-radius: 0.8rem;
-    border: 1px solid white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-right: 1rem;
-}
-
-#logout-btn:hover {
-    background: rgba(108, 208, 255, 0.672);
-    border: 1.5px solid #081b29;
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-/* Auth Tabs */
+/* NEW: Add styles for auth tabs */
 .auth-tabs {
     display: flex;
     justify-content: center;
@@ -755,7 +746,7 @@ body.dark-mode .input-toggle .btn:hover {
     visibility: visible;
   }
   
-  /* Blur effect for transitions */
+/* NEW: Add blur effect for transitions */
   @keyframes blurFadeIn {
     0% {
       opacity: 0;
@@ -786,6 +777,42 @@ body.dark-mode .input-toggle .btn:hover {
     animation: blurFadeOut 0.3s forwards;
   }
 
+/* NEW: Add styles for remember me checkbox */
+.remember-me-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.remember-me-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.remember-me-container label {
+    font-size: 1.4rem;
+    color: var(--text-color);
+}
+
+/* NEW: Add styles for loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.loading-overlay.show {
+    opacity: 1;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     html { font-size: 55%; }
@@ -795,6 +822,7 @@ body.dark-mode .input-toggle .btn:hover {
     section { padding: 2rem 4%; }
 }
 
+/* MODIFIED: Update responsive design */
 @media (max-width: 768px) {
     .navbar { display: none; }
     .project-content { padding: 13px; }
