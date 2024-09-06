@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
             authSection.style.display = 'none';
             contentSection.style.display = 'block';
             logoutBtn.style.display = 'block';
-            hideLoading(); // Add this line to ensure the loading indicator is hidden
+            hideLoading(); // Make sure this line is here
         } else {
             console.error('Auth section, content section, or logout button not found');
         }
@@ -223,10 +223,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function hideLoading() {
-        const overlay = document.querySelector('.loading-overlay');
-        if (overlay) {
-            overlay.classList.remove('show');
-            setTimeout(() => overlay.remove(), 300);
+        console.log('Attempting to hide loading overlay');
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        if (loadingOverlay) {
+            console.log('Loading overlay found, removing...');
+            loadingOverlay.classList.remove('show');
+            setTimeout(() => {
+                loadingOverlay.remove();
+                console.log('Loading overlay removed from DOM');
+            }, 300);
+        } else {
+            console.log('No loading overlay found to hide');
         }
     }
 
@@ -627,18 +634,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         // Initial UI setup
         showAuthSection();
-    }
-
-    function showContentSection() {
-        console.log('Showing content section');
-        if (authSection && contentSection && logoutBtn) {
-            authSection.style.display = 'none';
-            contentSection.style.display = 'block';
-            logoutBtn.style.display = 'block';
-            hideLoading(); // Add this line to ensure the loading indicator is hidden
-        } else {
-            console.error('Auth section, content section, or logout button not found');
-        }
     }
 
     // Initial UI setup

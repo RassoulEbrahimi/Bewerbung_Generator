@@ -575,7 +575,7 @@ body.dark-mode #dark-mode-toggle {
     justify-content: center;
 }
 
-/* ... (existing styles remain unchanged) ... */
+/* ... (rest of the styles remain unchanged) ... */
 
 /* Error Message Styling */
 .error-message {
@@ -806,11 +806,13 @@ body.dark-mode .input-toggle .btn:hover {
     align-items: center;
     z-index: 1000;
     opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
 }
 
 .loading-overlay.show {
     opacity: 1;
+    visibility: visible;
 }
 
 /* Responsive Design */
