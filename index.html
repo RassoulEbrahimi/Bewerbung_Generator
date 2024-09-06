@@ -17,16 +17,16 @@
     <div class="video-container">
         <!-- Fallback image for mobile or when video doesn't load -->
         <img src="fallback-image.jpg" alt="AI-powered application generator background" class="fallback-image">
-    
         <video class="video-background" playsinline autoplay muted loop poster="video-poster.jpg">
             <source data-src="xBew.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
-    <!-- <button id="dark-mode-toggle" aria-label="Toggle Dark Mode">🌙</button> -->
+    <!-- Modify the header to include the logout button -->
     <header class="header" role="banner">
         <div class="header-buttons">
+            <!-- NEW: Add id to the logout button -->
             <button id="logout-btn" class="btn" style="display: none;">Abmelden</button>
             <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
         </div>
@@ -44,7 +44,7 @@
                     <h2>xBewerbung<br>KI-gestützter Bewerbungsgenerator</h2>
                     <p>Erstellen Sie Ihre individuelle Bewerbung mit KI</p>
 
-                    <!-- New Authentication Section -->
+                    <!-- Modify the authentication section -->
                     <div id="auth-section" style="display: none;">
                         <div class="auth-tabs">
                             <button class="auth-tab-btn active" data-tab="login">Anmelden</button>
@@ -52,15 +52,19 @@
                         </div>
                         
                         <div class="auth-content">
-                            <!-- Corrected login form -->
+                            <!-- NEW: Update login form -->
                             <form id="login-form" class="auth-form active">
                                 <h3>Anmelden</h3>
                                 <input type="email" id="login-email" placeholder="E-Mail" required>
                                 <input type="password" id="login-password" placeholder="Passwort" required>
+                                <!-- NEW: Add remember me checkbox -->
+                                <label>
+                                    <input type="checkbox" id="remember-me"> Angemeldet bleiben
+                                </label>
                                 <button type="submit" class="btn">Anmelden</button>
                             </form>
                             
-                            <!-- Corrected register form -->
+                            <!-- NEW: Update register form -->
                             <form id="register-form" class="auth-form">
                                 <h3>Registrieren</h3>
                                 <input type="text" id="register-name" placeholder="Name" required>
@@ -71,55 +75,54 @@
                         </div>                    
                     </div>
 
-                <!-- Existing Content Section -->
-                <div id="content-section">
-                    <!-- <button id="logout-btn" class="btn" style="display: none;">Abmelden</button> -->
-
-                    <div class="input-toggle" role="tablist">
-                        <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen" role="tab" aria-selected="true">Datei hochladen</button>
-                        <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben" role="tab" aria-selected="false">Text eingeben</button>
-                    </div>
-
-                    <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data" aria-labelledby="form-title">
-                        <div id="file-inputs" aria-live="polite">
-                            <div class="file-input-container">
-                                <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
-                                <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt" aria-label="Lebenslauf hochladen" title="Lebenslauf hochladen">
-                            </div>
-                            <div class="file-input-container">
-                                <label for="jobbeschreibung">Jobbeschreibung (PDF, DOCX oder TXT):</label>
-                                <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt" aria-label="Jobbeschreibung hochladen" title="Jobbeschreibung hochladen">
-                            </div>
+                    <!-- Existing Content Section -->
+                    <div id="content-section">
+                        <div class="input-toggle" role="tablist">
+                            <button id="toggle-file" class="btn active" aria-label="Datei hochladen" title="Datei hochladen" role="tab" aria-selected="true">Datei hochladen</button>
+                            <button id="toggle-text" class="btn" aria-label="Text eingeben" title="Text eingeben" role="tab" aria-selected="false">Text eingeben</button>
                         </div>
-                        <div id="text-inputs" style="display: none;" aria-live="polite">
-                            <div class="text-input-container">
-                                <label for="lebenslauf-text">Lebenslauf (Text):</label>
-                                <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein" aria-label="Lebenslauf eingeben" title="Lebenslauf eingeben"></textarea>
-                            </div>
-                            <div class="text-input-container">
-                                <label for="jobbeschreibung-text">Jobbeschreibung (Text):</label>
-                                <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein" aria-label="Jobbeschreibung eingeben" title="Jobbeschreibung eingeben"></textarea>
-                            </div>
-                        </div>
-                        <div class="btn-box">
-                            <button type="submit" class="btn" aria-label="Bewerbung generieren" title="Bewerbung generieren">Bewerbung generieren</button>
-                        </div>
-                    </form>
 
-                    <div id="loading-indicator" style="display: none;" aria-live="assertive">
-                        <div class="spinner" aria-label="Laden..." title="Laden..."></div>
-                        <p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>
-                    </div>
+                        <form id="upload-form" action="https://api.xbewerbung.com/generate_bewerbung" method="post" enctype="multipart/form-data" aria-labelledby="form-title">
+                            <div id="file-inputs" aria-live="polite">
+                                <div class="file-input-container">
+                                    <label for="lebenslauf">Lebenslauf (PDF, DOCX oder TXT):</label>
+                                    <input type="file" id="lebenslauf" name="lebenslauf" accept=".pdf,.docx,.txt" aria-label="Lebenslauf hochladen" title="Lebenslauf hochladen">
+                                </div>
+                                <div class="file-input-container">
+                                    <label for="jobbeschreibung">Stellenanzeige (PDF, DOCX oder TXT):</label>
+                                    <input type="file" id="jobbeschreibung" name="jobbeschreibung" accept=".pdf,.docx,.txt" aria-label="Jobbeschreibung hochladen" title="Jobbeschreibung hochladen">
+                                </div>
+                            </div>
+                            <div id="text-inputs" style="display: none;" aria-live="polite">
+                                <div class="text-input-container">
+                                    <label for="lebenslauf-text">Lebenslauf (Text):</label>
+                                    <textarea id="lebenslauf-text" name="lebenslauf-text" rows="10" placeholder="Fügen Sie hier Ihren Lebenslauf ein" aria-label="Lebenslauf eingeben" title="Lebenslauf eingeben"></textarea>
+                                </div>
+                                <div class="text-input-container">
+                                    <label for="jobbeschreibung-text">Stellenanzeige (Text):</label>
+                                    <textarea id="jobbeschreibung-text" name="jobbeschreibung-text" rows="10" placeholder="Fügen Sie hier Ihre Jobbeschreibung ein" aria-label="Jobbeschreibung eingeben" title="Jobbeschreibung eingeben"></textarea>
+                                </div>
+                            </div>
+                            <div class="btn-box">
+                                <button type="submit" class="btn" aria-label="Bewerbung generieren" title="Bewerbung generieren">Bewerbung generieren</button>
+                            </div>
+                        </form>
 
-                    <div id="result-section" style="display: none;" aria-live="polite">
-                        <h3>Ihre generierte Bewerbung</h3>
-                        <div id="generated-content"></div>
-                        <div id="cost-info"></div>
-                        <div class="result-buttons">
-                            <button class="result-btn" id="copy-text" aria-label="In die Zwischenablage kopieren" title="In die Zwischenablage kopieren">In die Zwischenablage kopieren</button>
-                            <button class="result-btn" id="download-text" aria-label="Als TXT herunterladen" title="Als TXT herunterladen">Als TXT herunterladen</button>
-                            <button class="result-btn" id="download-pdf" aria-label="Als PDF herunterladen" title="Als PDF herunterladen">Als PDF herunterladen</button>
-                            <button class="result-btn" id="download-docx" aria-label="Als DOCX herunterladen" title="Als DOCX herunterladen">Als DOCX herunterladen</button>
+                        <div id="loading-indicator" style="display: none;" aria-live="assertive">
+                            <div class="spinner" aria-label="Laden..." title="Laden..."></div>
+                            <p>Ihre Bewerbung wird generiert... Bitte warten Sie.</p>
+                        </div>
+
+                        <div id="result-section" style="display: none;" aria-live="polite">
+                            <h3>Ihre generierte Bewerbung</h3>
+                            <div id="generated-content"></div>
+                            <div id="cost-info"></div>
+                            <div class="result-buttons">
+                                <button class="result-btn" id="copy-text" aria-label="In die Zwischenablage kopieren" title="In die Zwischenablage kopieren">In die Zwischenablage kopieren</button>
+                                <button class="result-btn" id="download-text" aria-label="Als TXT herunterladen" title="Als TXT herunterladen">Als TXT herunterladen</button>
+                                <button class="result-btn" id="download-pdf" aria-label="Als PDF herunterladen" title="Als PDF herunterladen">Als PDF herunterladen</button>
+                                <button class="result-btn" id="download-docx" aria-label="Als DOCX herunterladen" title="Als DOCX herunterladen">Als DOCX herunterladen</button>
+                            </div>
                         </div>
                     </div>
                 </div>
