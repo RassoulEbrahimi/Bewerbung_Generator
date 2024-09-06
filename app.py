@@ -21,7 +21,7 @@ from flask_wtf.csrf import generate_csrf
 
 # Keep existing environment variable loading and logging configuration
 load_dotenv()
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 # Initialize Flask app (keep existing configuration)
@@ -36,6 +36,7 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Allows cross-site cookies
 
 # NEW: Initialize CSRF protection
 csrf = CSRFProtect(app)
+csrf.init_app(app)
 
 # Keep existing database initialization
 db = SQLAlchemy(app)
@@ -270,7 +271,13 @@ def login_required(f):
 # NEW: Add a route to get CSRF token
 @app.route('/get-csrf-token', methods=['GET'])
 def get_csrf_token():
-    return jsonify({'csrf_token': csrf.generate_csrf()})
+    try:
+        token = csrf.generate_csrf()
+        app.logger.info(f"Generated CSRF token: {token}")
+        return jsonify({'csrf_token': token})
+    except Exception as e:
+        app.logger.error(f"Error generating CSRF token: {str(e)}")
+        return jsonify({'error': 'Failed to generate CSRF token'}), 500
 
 # MODIFIED: Update register route
 @app.route('/register', methods=['POST', 'OPTIONS'])

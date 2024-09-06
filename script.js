@@ -300,8 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Anmeldung fehlgeschlagen');
+                throw new Error(responseData.error || 'Login failed');
             }
     
             console.log('Login successful');
@@ -527,7 +526,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'GET',
                 credentials: 'include',
             });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
+            console.log('CSRF Token received:', data.csrf_token);
             return data.csrf_token;
         } catch (error) {
             console.error('Error fetching CSRF token:', error);
