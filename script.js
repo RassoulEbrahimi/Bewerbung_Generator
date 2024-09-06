@@ -282,6 +282,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`Attempting login for email: ${email}`);
         showLoading();
         try {
+            const csrfToken = await getCsrfToken(); // Make sure this function is implemented
+            console.log('CSRF Token obtained:', csrfToken);
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
                 headers: {
@@ -294,6 +296,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
             console.log('Login response status:', response.status);
             const responseData = await response.json();
+            console.log('Login response data:', responseData);
+
     
             if (!response.ok) {
                 const errorData = await response.json();
@@ -355,32 +359,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // MODIFIED: Register function
     async function register(email, password, name) {
         console.log(`Attempting registration for email: ${email}`);
-        showLoading();
         try {
+            const csrfToken = await getCsrfToken(); // Make sure this function is implemented
+            console.log('CSRF Token obtained:', csrfToken);
+            
             const response = await fetch(`${API_URL}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
                 },
                 body: JSON.stringify({ email, password, name }),
                 credentials: 'include'
             });
     
             console.log('Registration response status:', response.status);
+            const responseData = await response.json();
+            console.log('Registration response data:', responseData);
     
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Registrierung fehlgeschlagen');
-            }        
+                throw new Error(responseData.error || 'Registrierung fehlgeschlagen');
+            }
     
-            const result = await response.json();
-            console.log('Registration successful:', result);
-            return result;
+            console.log('Registration successful');
+            return responseData;
         } catch (error) {
             console.error('Error during registration:', error);
             throw error;
-        } finally {
-            hideLoading();
         }
     }
 
@@ -513,6 +518,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (error.message.includes('Sie müssen sich anmelden')) {
                 showAuthSection();
             }
+        }
+    }
+
+    async function getCsrfToken() {
+        try {
+            const response = await fetch(`${API_URL}/get-csrf-token`, {
+                method: 'GET',
+                credentials: 'include',
+            });
+            const data = await response.json();
+            return data.csrf_token;
+        } catch (error) {
+            console.error('Error fetching CSRF token:', error);
+            throw error;
         }
     }
 

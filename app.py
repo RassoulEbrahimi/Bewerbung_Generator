@@ -16,6 +16,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 # NEW: Import for CSRF protection
 from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import generate_csrf
+
 
 # Keep existing environment variable loading and logging configuration
 load_dotenv()
@@ -305,7 +307,7 @@ def login():
         
         if not data or 'email' not in data or 'password' not in data:
             app.logger.error("Invalid login data received")
-            return jsonify({"error": "Invalid login data"}), 400
+            return jsonify({"error": "Ungültige Anmeldedaten"}), 400
         
         user = User.query.filter_by(email=data['email']).first()
         app.logger.info(f"User found: {user is not None}")
@@ -315,13 +317,13 @@ def login():
             user.last_login = datetime.utcnow()
             db.session.commit()
             app.logger.info(f"Login successful for user: {user.id}")
-            return jsonify({"message": "Logged in successfully"}), 200
+            return jsonify({"message": "Erfolgreich angemeldet"}), 200
         
         app.logger.warning(f"Failed login attempt for email: {data.get('email')}")
-        return jsonify({"error": "Invalid email or password"}), 401
+        return jsonify({"error": "Ungültige E-Mail oder Passwort"}), 401
     except Exception as e:
         app.logger.error(f"Login error: {str(e)}", exc_info=True)
-        return jsonify({"error": "An unexpected error occurred"}), 500
+        return jsonify({"error": "Ein unerwarteter Fehler ist aufgetreten"}), 500
     
 
 @app.route('/logout', methods=['POST', 'OPTIONS'])
