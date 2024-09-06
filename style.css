@@ -743,7 +743,7 @@ body.dark-mode .input-toggle .btn:hover {
   
   .auth-form.active {
     opacity: 1;
-    /* visibility: visible; */
+    visibility: visible;
   }
   
 /* NEW: Add blur effect for transitions */
@@ -812,7 +812,7 @@ body.dark-mode .input-toggle .btn:hover {
 
 .loading-overlay.show {
     opacity: 1;
-    visibility: visible;
+    /* visibility: visible; */
 }
 
 /* Responsive Design */
