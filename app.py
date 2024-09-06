@@ -39,9 +39,9 @@ db = SQLAlchemy(app)
 
 # MODIFIED: Update CORS configuration to include your GitHub Pages URL and local development URL
 CORS(app, resources={r"/*": {
-    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "http://localhost:5000"],
+    "origins": ["https://rassoulebrahimi.github.io", "https://rassoulebrahimi.github.io/xBewerbung", "https://xbewerbung.onrender.com", "http://localhost:5000"],
     "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization", "X-CSRF-Token"],
+    "allow_headers": ["Content-Type", "Authorization", "X-CSRFToken"],  # Changed from "X-CSRF-Token" to "X-CSRFToken"
     "supports_credentials": True
 }})
 
