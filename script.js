@@ -451,11 +451,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-    // Logout handler (Keep this as is)
+    // MODIFIED: Logout handler
     async function handleLogout() {
         console.log('Logout initiated');
         try {
-            const csrfToken = await getCsrfToken(); // Make sure this function is implemented
+            const csrfToken = await getCsrfToken();
             const response = await fetch(`${API_URL}/logout`, {
                 method: 'POST',
                 headers: {
@@ -465,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({}), // Send an empty object
                 credentials: 'include'
             });
-    
+
             if (response.ok) {
                 console.log('Logout successful');
                 showAuthSection();
