@@ -462,7 +462,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken
                 },
-                body: JSON.stringify({}), // Send an empty object
                 credentials: 'include'
             });
 

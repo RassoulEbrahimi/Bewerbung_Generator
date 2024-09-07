@@ -329,15 +329,26 @@ def login():
     
 
 @app.route('/logout', methods=['POST', 'OPTIONS'])
+@csrf.exempt  # Temporarily exempt from CSRF protection for debugging
 def logout():
     if request.method == 'OPTIONS':
         return '', 204
     
-    if 'user_id' not in session:
-        return jsonify({"error": "Sie sind nicht angemeldet."}), 400
+    app.logger.info(f"Logout attempt. Session: {session}")
+    app.logger.info(f"Request headers: {request.headers}")
+    app.logger.info(f"Request data: {request.get_data()}")
     
-    session.pop('user_id', None)
-    return jsonify({"message": "Erfolgreich abgemeldet"}), 200
+    if 'user_id' not in session:
+        app.logger.warning("Logout attempted without user_id in session")
+        return jsonify({"error": "Sie sind nicht angemeldet."}), 401  # Changed to 401 Unauthorized
+    
+    try:
+        session.pop('user_id', None)
+        app.logger.info("User successfully logged out")
+        return jsonify({"message": "Erfolgreich abgemeldet"}), 200
+    except Exception as e:
+        app.logger.error(f"Error during logout: {str(e)}")
+        return jsonify({"error": "Ein Fehler ist beim Abmelden aufgetreten."}), 500
 
 
 # MODIFIED: Update generate_bewerbung route to include CSRF protection
