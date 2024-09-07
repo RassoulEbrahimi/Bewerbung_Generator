@@ -785,12 +785,29 @@ body.dark-mode .input-toggle .btn:hover {
 }
 
 .remember-me-container input[type="checkbox"] {
-    margin-right: 5px;
+    margin-right: 8px;
+    /* Adjust size if needed */
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .remember-me-container label {
-    font-size: 1.4rem;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+/* Ensure visibility in both light and dark modes */
+.light-mode .remember-me-container,
+.dark-mode .remember-me-container {
     color: var(--text-color);
+}
+
+.light-mode .remember-me-container input[type="checkbox"],
+.dark-mode .remember-me-container input[type="checkbox"] {
+    accent-color: var(--primary-color);
 }
 
 /* NEW: Add styles for loading overlay */
